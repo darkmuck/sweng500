@@ -1,0 +1,59 @@
+***CAKEPHP 1.3 DEMONSTRATION***
+Prerequisites:
+-CakePHP 1.3.x (https://github.com/cakephp/cakephp/archive/1.3.15.zip)
+-Server(s) with: HTTPD, PHP, & PostgreSQL
+--If using Windows then download XAMPP
+--If using OS X or Linux you should have these installed by default (except for maybe PostgreSQL)
+
+External Resources:
+-CakePHP Guide/Cookbook - http://book.cakephp.org/
+-CakePHP Bakery (examples, tutorials ,etc.) - http://bakery.cakephp.org/
+-API Documentation - http://api.cakephp.org/
+-Good Starting Tutorials/Examples: http://book.cakephp.org/1.3/en/The-Manual/Tutorials-Examples.html
+
+Basics of CakePHP:
+1. Understanding MVC (Model View Controller) http://book.cakephp.org/1.3/en/The-Manual/Beginning-With-CakePHP/Understanding-Model-View-Controller.html
+   a. Model - represents the application data (serves as ORM (object-relational mapping) to database and provides an extra layer that can act as an intermediary providing data validation, sanitization, etc.)
+   b. View - renders the presentation of the model data. This is what the user sees
+   c. Controller - handles and routes requests made by the client (from the views basically)
+2. CakePHP Structure: http://book.cakephp.org/1.3/en/The-Manual/Basic-Principles-of-CakePHP/CakePHP-Structure.html
+3. A typical CakePHP request: http://book.cakephp.org/1.3/en/The-Manual/Basic-Principles-of-CakePHP/A-Typical-CakePHP-Request.html
+4. CakePHP Folder layout/structure: http://book.cakephp.org/1.3/en/The-Manual/Basic-Principles-of-CakePHP/CakePHP-Folder-Structure.html
+   a. The important items in the folder layout are basically:
+      /web_document_root/
+          /app     (our application code)
+              /config
+              /controllers
+              /models
+              /views
+              /webroot    (this is the folder that the HTTP server should point to)
+          /cake    (this is the cakephp library)
+          /plugins
+          /vendors
+          .htaccess
+          index.php
+5. CakePHP conventions/standards: http://book.cakephp.org/1.3/en/The-Manual/Basic-Principles-of-CakePHP/CakePHP-Conventions.html
+6. Built-in support for:
+   -data validation
+   -data sanitization
+   -error handling
+   -debugging
+   -caching
+   -logging
+   -testing
+   -REST
+7. Built-in components:
+   -Access Control Lists
+   -Authentication
+   -Cookies
+   -Sessions
+   -Email
+   -Request Handling
+   -Security
+8. Built-in help for:
+   -AJAX
+   -Pagination
+   -Session Handling
+   -etc.
+
+
