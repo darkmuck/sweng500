@@ -10,6 +10,12 @@
 */
 
 class UserControllerTest extends CakeTestCase {
-	
+	function testLogin() {
+		$data = array('username' => 'tester', 'password' => 'tester');
+		$result = $this->testAction('/users/login', array('method'=> 'post', 
+					'return' => 'result', 
+					'data' => $data));
+		debug($result);
+	}
 }
 ?>

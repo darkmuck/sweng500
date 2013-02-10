@@ -44,7 +44,7 @@ class UsersController extends AppController {
             	    	array('username'=>$this->Auth->data['User']['username'], 'password'=> $this->Auth->data['User']['password'])
             	    )
             );
-            die(debug($user));
+
             if (!empty($user)) {
                 $this->Auth->login($user);	
                 $this->Session->delete('Message.auth');
