@@ -47,7 +47,7 @@ class UserControllerTest extends CakeTestCase {
 	
 	function testLogin() {
 		$this->TestUserController->Auth->data = array ('User' => array('username' => 'tester', 
-				'password' => 'tester'));
+				'password' => '*945E2AF30B5AA2DC36C9B6363D9B1D52A3E4D4D'));
 		
 		$this->TestUserController->data = array('username' => 'tester', 'password' => 'tester');
 		
@@ -58,6 +58,35 @@ class UserControllerTest extends CakeTestCase {
 	    
 	    //assert the url
 	    $this->assertEqual($this->TestUserController->redirectUrl, array('action' => 'start'));
+	}
+	
+	function testIncorrectLogin() {
+		$this->TestUserController->Auth->data = array ('User' => array('username' => 'asdfasd', 
+				'password' => 'asdfads'));
+		
+		$this->TestUserController->data = array('username' => 'asdf', 'password' => 'asdfdsa');
+		
+		$this->TestUserController->params = Router::parse('/users/login');
+	    $this->TestUserController->beforeFilter();
+
+	    $this->TestUserController->login();
+	    
+	    //assert the url
+	    $this->assertEqual($this->TestUserController->redirectUrl, array('action' => 'start'));
+	}
+	
+	function testLogout() {
+		$this->TestUserController->Auth->data = array ('User' => array('username' => 'tester', 
+				'password' => '*945E2AF30B5AA2DC36C9B6363D9B1D52A3E4D4D'));
+		$this->TestUserController->data = array('username' => 'asdf', 'password' => 'asdfdsa');
+		
+		$this->TestUserController->params = Router::parse('/users/logout');
+	    $this->TestUserController->beforeFilter();
+
+	    $this->TestUserController->logout();
+	    
+	    //assert the url
+	    $this->assertEqual($this->TestUserController->redirectUrl, '/start');
 	}
 }
 ?>
