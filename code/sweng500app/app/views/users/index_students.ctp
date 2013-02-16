@@ -11,7 +11,11 @@
 ?>
 
 <div>
-    <h2>Users</h2>
+    <h2>Students</h2>
+    
+    <?php
+        echo '<p>'. $this->Form->button('Add User', array('onClick'=>"location.href='".$this->Html->url('/users/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    ?>
     
     <small>
     <strong>&nbsp;Type:  </strong>
@@ -56,12 +60,13 @@
             ?>
         </td>
         <td><?php if ($user['User']['enabled'] == '1') { echo 'Yes'; } else { echo 'No'; }; ?></td>
-        <td><?php 
-            echo $html->link('View', array('action' => 'view', $user['User']['id'])); 
-            echo "  |  ";
-            echo $html->link('Edit', array('action'=>'edit', $user['User']['id']));
-            echo "  |  "; 
-            echo $html->link('Disable', array('action' => 'disable', $user['User']['id']), null, 'Are you sure you want to disable this person?' ) ?></td>                          
+        <td>
+            <?php 
+            echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$user['User']['id']))."'", 'class'=>'btn btn-info'));
+            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$user['User']['id']))."'", 'class'=>'btn btn-warning'));
+            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'disable',$user['User']['id']))."'", 'class'=>'btn btn-danger'));
+            ?>
+        </td>                          
     </tr>
 
     <?php $x++; endforeach; ?>
