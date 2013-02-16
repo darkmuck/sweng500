@@ -12,6 +12,8 @@
 class User extends AppModel {
 
     var $name = 'User';
+    
+    var $virtualFields = array('name' => "User.last_name +', '+ 'User.first_name' +' '+ 'User.middle_name'");
 
     var $hasAndBelongsToMany = array(
         'Type' => array(

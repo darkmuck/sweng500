@@ -15,9 +15,9 @@
     
     <small>
     <strong>&nbsp;Type:  </strong>
-    <?php echo '<strong>'.$this->Html->link('All', array('action'=>'index')) .'</strong>  |  '; ?>
+    <?php echo $this->Html->link('All', array('action'=>'index')) .'  |  '; ?>
     <?php echo $this->Html->link('Instructors', array('action'=>'indexInstructors')) .'  |  '; ?>
-    <?php echo $this->Html->link('Students', array('action'=>'indexStudents')) .'  |  '; ?>
+    <?php echo '<strong>'. $this->Html->link('Students', array('action'=>'indexStudents')) .'</strong>  |  '; ?>
     <?php echo $this->Html->link('Administrators', array('action'=>'indexAdministrators')); ?>
     </small>
 

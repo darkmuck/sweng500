@@ -41,7 +41,7 @@
 /**
  * The actual directory name for the "app".
  *
- */
+ */ 
 	if (!defined('APP_DIR')) {
 		define('APP_DIR', basename(dirname(dirname(__FILE__))));
 	}

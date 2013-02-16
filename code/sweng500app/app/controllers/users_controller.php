@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-08
- * Modified: 2013-02-14 08:35
+ * Modified: 2013-02-16 13:30
  * Modified By: William DiStefano
 */
 
@@ -14,13 +14,37 @@ class UsersController extends AppController {
     var $name = 'Users';
     
     function start() {
-
+        //user start page
     }
 
     function index() {
-        $this->paginate = array('User' => array('limit' => 10, 'conditions' => array('User.enabled' => 1), 'order' => array('User.last_name' => 'asc')));
+        $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
 
-        $users = $this->paginate('User', array('User.enabled' => 1));
+        $users = $this->paginate('User');
+
+        $this->set('users', $users);
+    }
+    
+    function indexStudents() {
+        $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
+
+        $users = $this->paginate('User', array('User.type_id'=>'3'));
+
+        $this->set('users', $users);
+    }
+    
+    function indexInstructors() {
+        $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
+
+        $users = $this->paginate('User', array('User.type_id'=>'2'));
+
+        $this->set('users', $users);
+    }
+    
+    function indexAdministrators() {
+        $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
+
+        $users = $this->paginate('User', array('User.type_id'=>'1'));
 
         $this->set('users', $users);
     }
