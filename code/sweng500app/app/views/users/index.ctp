@@ -5,7 +5,7 @@
  * File: index.php
  * Description: This view provides a listing of users in the database
  * Created: 2013-02-16
- * Modified: 2013-02-16 13:00
+ * Modified: 2013-02-16 2014
  * Modified By: William DiStefano
 */
 ?>
@@ -64,7 +64,7 @@
             <?php 
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$user['User']['id']))."'", 'class'=>'btn btn-info'));
             echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$user['User']['id']))."'", 'class'=>'btn btn-warning'));
-            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'disable',$user['User']['id']))."'", 'class'=>'btn btn-danger'));
+            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$user['User']['id']))."'", 'class'=>'btn btn-danger'));
             ?>
         </td>
     </tr>

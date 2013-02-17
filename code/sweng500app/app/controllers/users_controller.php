@@ -55,16 +55,40 @@ class UsersController extends AppController {
 	$this->set('user', $user);
     }
     
-    function edit($id = null) {
-        
+    function edit($id = null) 
+    {
+	$this->User->id = $id;
+	$this->User->read();
+	$user = $this->User->data;
+	$this->set('user', $user);
+	if (!empty($this->data)){
+		if ($this->User->save($this->data)) 
+		{             
+			$this->Session->setFlash('User has been saved');             
+			$this->redirect(array('action' => 'index'));         
+		} else {
+			$this->Session->setFlash('Error: unable to edit user');
+		}
+	}
     }
     
-    function disable($id = null) {
-        
+    function delete($id = null) {
+	$this->User->delete($id);
+	$this->Session->setFlash('User has been deleted');
+	$this->redirect(array('action'=>'index'));
     }
     
-    function add () {
-        
+    function add () 
+    {
+	if (!empty($this->data)){
+		if ($this->User->save($this->data))
+		{
+			$this->Session->setFlash('New user has been added');
+			$this->redirect(array('action' => 'index'));
+		} else {
+			$this->Session->setFlash('Error: New user has not been added');
+		}
+	}
     }
     
     function login() {

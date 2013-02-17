@@ -26,6 +26,11 @@
             echo '<li>'. $this->Html->link('Lessons', array('controller'=>'Lessons','action'=>'index')) .'</li>';
             echo '<li>'. $this->Html->link('Grades', array('controller'=>'Grades','action'=>'index')) .'</li>';
             echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
+            if ($this->Session->check('Auth.User') == 0) {
+                echo '<li>'. $this->Html->link('Login', array('controller'=>'Users','action'=>'login')) .'</li>';
+            } else {
+                echo '<li>'. $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout')) .'</li>';
+            }
             echo '</li>';
 
 
