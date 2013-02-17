@@ -34,6 +34,15 @@ class TestUserController extends UsersController {
 
 class UserControllerTest extends CakeTestCase {
 	
+	public $debugUser = array('id' => 2,
+		'username' => 'test2', 
+		'password' => '725e854bd3b14a70e56519d844f55564f042cf74',
+		'first_name' => 'Tester',
+		'middle_name' => '2',
+		'last_name' => 'Second',
+		'type_id' => 1);
+	
+	
 	function startTest() {
 		$this->TestUserController = new TestUserController();
 		$this->TestUserController->constructClasses();
@@ -41,17 +50,18 @@ class UserControllerTest extends CakeTestCase {
 	}
 	
 	function endTest() {
+		$this->TestUserController->Session->destroy();
 		unset($this->TestUserController);
 		ClassRegistry::flush();
 	}
 	
 	function testLogin() {
 		$this->TestUserController->Auth->data = array ('User' => array('username' => 'tester', 
-				'password' => '*945E2AF30B5AA2DC36C9B6363D9B1D52A3E4D4D'));
+				'password' => 'b96689421b87d4c93f377eba19b8eb97807e2656'));
 		
 		$this->TestUserController->data = array('username' => 'tester', 'password' => 'tester');
 		
-		$this->TestUserController->params = Router::parse('/users/login');
+		$this->TestUserController->params = Router::parse('/Users/login');
 	    $this->TestUserController->beforeFilter();
 
 	    $this->TestUserController->login();
@@ -66,7 +76,7 @@ class UserControllerTest extends CakeTestCase {
 		
 		$this->TestUserController->data = array('username' => 'asdf', 'password' => 'asdfdsa');
 		
-		$this->TestUserController->params = Router::parse('/users/login');
+		$this->TestUserController->params = Router::parse('/Users/login');
 	    $this->TestUserController->beforeFilter();
 
 	    $this->TestUserController->login();
@@ -77,10 +87,10 @@ class UserControllerTest extends CakeTestCase {
 	
 	function testLogout() {
 		$this->TestUserController->Auth->data = array ('User' => array('username' => 'tester', 
-				'password' => '*945E2AF30B5AA2DC36C9B6363D9B1D52A3E4D4D'));
+				'password' => 'b96689421b87d4c93f377eba19b8eb97807e2656'));
 		$this->TestUserController->data = array('username' => 'asdf', 'password' => 'asdfdsa');
 		
-		$this->TestUserController->params = Router::parse('/users/logout');
+		$this->TestUserController->params = Router::parse('/Users/logout');
 	    $this->TestUserController->beforeFilter();
 
 	    $this->TestUserController->logout();
@@ -88,5 +98,105 @@ class UserControllerTest extends CakeTestCase {
 	    //assert the url
 	    $this->assertEqual($this->TestUserController->redirectUrl, '/start');
 	}
+	
+	function testIndex() {
+		$this->TestUserController->params = Router::parse('/Users');
+		$this->TestUserController->params['url']['url'] ='/Users';
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->index();
+		$count = count($this->TestUserController->viewVars['users']);
+		$this->assertTrue( $count >= 0);
+	}
+	
+	function testIndexStudents() {
+		$this->TestUserController->params = Router::parse('/Users/indexStudents');
+		$this->TestUserController->params['url']['url'] ='/Users/indexStudents';
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->indexStudents();
+		$count = count($this->TestUserController->viewVars['users']);
+		$this->assertTrue( $count >= 0);
+	}
+	
+	function testIndexInstructors() {
+		$this->TestUserController->params = Router::parse('/indexInstructors');
+		$this->TestUserController->params['url']['url'] ='/Users/indexInstructors';
+		$this->TestUserController->Session->write('Auth.User', array(
+	        'id' => 1,
+	        'username' => 'tester',
+    	));
+		
+		$this->TestUserController->beforeFilter();
+		$this->TestUserController->Component->startup($this->TestUserController);
+		$this->TestUserController->indexInstructors();
+		$count = count($this->TestUserController->viewVars['users']);
+		$this->assertTrue( $count >= 0);
+	}
+	
+	function testIndexAdministrators() {
+		
+		$this->TestUserController->params = Router::parse('/users/indexAdministrators');
+		$this->TestUserController->params['url']['url'] ='/Users/indexAdministrators';
+		$this->TestUserController->beforeFilter();
+		$this->TestUserController->Component->startup($this->TestUserController);
+		$this->TestUserController->indexAdministrators();
+		$count = count($this->TestUserController->viewVars['users']);
+		$this->assertTrue( $count >= 1);
+	}
+	
+	
+	
+	function testAdd() {
+		$this->TestUserController->data = array('User' => $this->debugUser);
+		
+		$this->TestUserController->params = Router::parse('/Users/add');
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->add();
+
+		$this->assertEqual($this->TestUserController->redirectUrl, array('action'=> 'index'));
+	}
+	
+	function testViewUser() {
+		$id = 2;
+		$this->TestUserController->params = Router::parse('/Users/view');
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->view($id);
+		$this->assertEqual($this->TestUserController->viewVars['user']['User']['first_name'], 
+			$this->debugUser['first_name']);
+	}
+	
+	function testEdit() {
+		
+		$this->debugUser['first_name'] = 'TestEdit';
+		$this->TestUserController->data = array('User' => $this->debugUser);
+		
+		$this->TestUserController->params = Router::parse('/Users/edit');
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->edit();
+		
+		$this->TestUserController->User->id = 2;
+		$user = $this->TestUserController->User->read();
+		
+		$this->assertEqual($user['User']['first_name'], $this->debugUser['first_name']);
+		
+		
+	}
+	
+	function testDelete() {
+		$id = 2;
+		$this->TestUserController->params = Router::parse('/Users/delete');
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->delete($id);
+		$this->TestUserController->User->id = $id;
+		$this->assertFalse($this->TestUserController->User->read());
+		
+	}
+	
+	
 }
 ?>

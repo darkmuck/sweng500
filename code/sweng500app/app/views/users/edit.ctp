@@ -14,7 +14,7 @@
     <h2><?php echo $user['User']['name'];?> </h2>
     
     <?php 
-        echo $this->Form->create('User', array('action'=>'add'));
+        echo $this->Form->create('User', array('action'=>'edit'));
         echo $this->Form->hidden('id', array('value'=>$user['User']['id']));
     ?>
     <table class="table">
