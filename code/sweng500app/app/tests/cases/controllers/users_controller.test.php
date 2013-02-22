@@ -34,7 +34,7 @@ class TestUserController extends UsersController {
 
 class UserControllerTest extends CakeTestCase {
 	
-	public $debugUser = array('id' => 2,
+	public $debugUser = array('id' => -1,
 		'username' => 'test2', 
 		'password' => '725e854bd3b14a70e56519d844f55564f042cf74',
 		'first_name' => 'Tester',
@@ -159,7 +159,7 @@ class UserControllerTest extends CakeTestCase {
 	}
 	
 	function testViewUser() {
-		$id = 2;
+		$id = -1;
 		$this->TestUserController->params = Router::parse('/Users/view');
 		$this->TestUserController->beforeFilter();
 		
@@ -178,7 +178,7 @@ class UserControllerTest extends CakeTestCase {
 		
 		$this->TestUserController->edit();
 		
-		$this->TestUserController->User->id = 2;
+		$this->TestUserController->User->id = -1;
 		$user = $this->TestUserController->User->read();
 		
 		$this->assertEqual($user['User']['first_name'], $this->debugUser['first_name']);
@@ -187,7 +187,7 @@ class UserControllerTest extends CakeTestCase {
 	}
 	
 	function testDelete() {
-		$id = 2;
+		$id = -1;
 		$this->TestUserController->params = Router::parse('/Users/delete');
 		$this->TestUserController->beforeFilter();
 		
