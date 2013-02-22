@@ -1,49 +1,53 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <?php echo $this->Html->charset(); ?>
-    <title><?php echo $title_for_layout; ?></title>
+    <title><?php echo 'Team 3 eLearning System - '. $title_for_layout; ?></title>
     <?php echo $this->Html->meta('icon'); ?>
     <?php
-        //echo $this->Html->script(array('jquery-1.9.1.min.js',));
-        echo $this->Html->css(array('stylesheet'));
+        echo $this->Html->script(array(/*'jquery-1.9.1.min.js',*/'bootstrap.min.js'));
+        echo $this->Html->css(array('bootstrap','stylesheet-custom'));
         echo $scripts_for_layout;
     ?>
+
 </head>
 <body>
-    <div id="container">
-        <div id="header">
-            <h1>SWENG500 - Team 3</h1>
+  <div class="wrap">
+    <div class="container">
+        <div class="header">
+            <h1>Team 3 eLearning System</h1>
         </div>
-        <div id="mainMenu">
+        <div class="navbar">
+        <div class="navbar-inner">
         <?php
-            echo '<strong>Menu: </strong>';
-            echo $this->Html->link('Start', array('controller'=>'Users','action'=>'start'));
-            echo '  |  ';
-            echo 'Courses';
-            echo '  |  ';
-            echo 'Lessons';
-            echo '  |  ';
-            echo 'Grades';
-            echo '  |  ';
-            echo $this->Html->link('Users', array('controller'=>'Users','action'=>'index'));
-
-            echo '<span style="float: right; margin: 0em 0.50em 0 0;">';
-            if ($this->Session->check('Auth.User') == 1) {
-                echo $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout'));
+            echo $this->Html->link('Home', array('controller'=>'Users','action'=>'start'),array('class'=>'brand'));
+            echo '<ul class="nav">';
+            echo '<li>'. $this->Html->link('Courses', array('controller'=>'Courses','action'=>'index')) .'</li>';
+            echo '<li>'. $this->Html->link('Lessons', array('controller'=>'Lessons','action'=>'index')) .'</li>';
+            echo '<li>'. $this->Html->link('Grades', array('controller'=>'Grades','action'=>'index')) .'</li>';
+            echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
+            if ($this->Session->check('Auth.User') == 0) {
+                echo '<li>'. $this->Html->link('Login', array('controller'=>'Users','action'=>'login')) .'</li>';
             } else {
-                echo$this->Html->link('Login', array('controller'=>'Users','action'=>'login'));
+                echo '<li>'. $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout')) .'</li>';
             }
-            echo '</span>';
+            echo '</li>';
+
+
         ?>
+        </div>
         </div>
         <div id="content">
             <?php echo $this->Session->flash(); ?>
             <?php echo $content_for_layout; ?>
         </div>
-        <div id="footer">
-            SWENG500 - Team 3 - 2013
-        </div>
+    </div>
+    <div id="push"></div>
+  </div>
+    <div id="footer">
+      <div class="container">
+        <p class="muted credit">2013 - Team 3 eLearning System</p>
+      </div>
     </div>
 </body>
-<?php echo $this->element('sql_dump');?>
 </html>

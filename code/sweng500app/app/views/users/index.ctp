@@ -2,25 +2,38 @@
 /* SWENG500 - Team 3
  * William DiStefano, Dawn Viscuso, Kevin Scheib, David Singer
  *
- * File: UsersController.php
- * Description: This controller provides request handling for users data
- * Created: 2013-02-08
- * Modified: 2013-02-14 08:45
+ * File: index.php
+ * Description: This view provides a listing of users in the database
+ * Created: 2013-02-16
+ * Modified: 2013-02-16 2014
  * Modified By: William DiStefano
 */
 ?>
 
 <div>
-    <h2>Users</h2>
+    <h2>All Users</h2>
+    
+    <?php
+        echo '<p>'. $this->Form->button('Add User', array('onClick'=>"location.href='".$this->Html->url('/users/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    ?>
+    
+    <small>
+    <strong>&nbsp;Type:  </strong>
+    <?php echo '<strong>'.$this->Html->link('All', array('action'=>'index')) .'</strong>  |  '; ?>
+    <?php echo $this->Html->link('Instructors', array('action'=>'indexInstructors')) .'  |  '; ?>
+    <?php echo $this->Html->link('Students', array('action'=>'indexStudents')) .'  |  '; ?>
+    <?php echo $this->Html->link('Administrators', array('action'=>'indexAdministrators')); ?>
+    </small>
 
-<table cellpadding="0" cellspacing="0">
+<table class="table">
     
     <tr>
          <th><?php echo $this->Paginator->sort('last_name'); ?></th>
          <th><?php echo $this->Paginator->sort('first_name'); ?></th>
          <th><?php echo $this->Paginator->sort('username'); ?></th>
+         <th><?php echo $this->Paginator->sort('type_id'); ?></th>
          <th><?php echo $this->Paginator->sort('enabled'); ?></th>
-         <th>&nbsp;</th>
+         <th>Actions</th>
      </tr> 
 
     <?php $x=1; foreach ($users as $user) : ?>
@@ -29,13 +42,31 @@
         <td><?php echo $user['User']['last_name']; ?></td>
         <td><?php echo $user['User']['first_name']; ?></td>
         <td><?php echo $user['User']['username']; ?></td>
-        <td><?php if ($user['User']['enabled'] == 1) { echo 'Yes'; } else { echo 'No'; }; ?></td>
-        <td><?php 
-            echo $html->link('View', array('action' => 'view', $user['User']['id'])); 
-            echo "  |  ";
-            echo $html->link('Edit', array('action'=>'edit', $user['User']['id']));
-            echo "  |  "; 
-            echo $html->link('Disable', array('action' => 'disable', $user['User']['id']), null, 'Are you sure you want to disable this person?' ) ?></td>                          
+        <td>
+            <?php 
+                switch ($user['User']['type_id']) {
+                    case '1':
+                    	    echo 'Administrator';
+                    	    break;
+                    case '2':
+                    	    echo 'Instructor';
+                    	    break;
+                    case '3':
+                    	    echo 'Student';
+                    	    break;
+                    default:
+                    	    echo '-';
+                }
+            ?>
+        </td>
+        <td><?php if ($user['User']['enabled'] == '1') { echo 'Yes'; } else { echo 'No'; }; ?></td>
+        <td>
+            <?php 
+            echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$user['User']['id']))."'", 'class'=>'btn btn-info'));
+            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$user['User']['id']))."'", 'class'=>'btn btn-warning'));
+            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$user['User']['id']))."'", 'class'=>'btn btn-danger'));
+            ?>
+        </td>
     </tr>
 
     <?php $x++; endforeach; ?>
