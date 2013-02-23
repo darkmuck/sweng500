@@ -62,7 +62,17 @@ class LessonsControllerTest extends CakeTestCase {
 		
 		$this->TestLessonsController->add();
 		
-		$this->assertEqual($this->TestLessonsController->redirectUrl, array('action'=> 'index'));
+		$this->assertEqual($this->TestLessonsController->redirectUrl, array('action'=> 'index', $this->debugLesson['id']));
+	}
+	
+	function testView() {
+		$this->TestLessonsController->params = Router::parse('/Lessons/view/'. $this->debugLesson['id']);
+		$this->TestLessonsController->params['url']['url'] ='/Lessons/view/'. $this->debugLesson['id'];
+		$this->TestLessonsController->beforeFilter();
+		
+		$this->TestLessonsController->view($this->debugLesson['id']);
+		$this->assertEqual($this->TestLessonsController->viewVars['lesson']['Lesson']['id'], 
+			$this->debugLesson['id']);
 	}
 	
 	function testIndex() {
@@ -82,7 +92,7 @@ class LessonsControllerTest extends CakeTestCase {
 	}
 	
 	function testEdit() {
-		$this->debugLesson['main_content'] = 'alertered content';
+		$this->debugLesson['main_content'] = 'altered content';
 		
 		$this->TestLessonsController->data = array('Lesson' => $this->debugLesson);
 		
@@ -107,8 +117,9 @@ class LessonsControllerTest extends CakeTestCase {
 		
 		$this->TestLessonsController->delete($this->debugLesson['id']);
 		
-		$this->assertEqual($this->TestLessonsController->redirectUrl, array('action'=> 'index'));
+		$this->assertEqual($this->TestLessonsController->redirectUrl, array('action'=> 'index', $this->debugLesson['id']));
 	}
+	
 	
 }
 ?>

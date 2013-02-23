@@ -13,7 +13,8 @@ class LessonsController extends AppController {
 	var $name = 'Lessons';
 	
 	function index($courseId = null) {
-		$this->paginate = array('Lesson' => array('limit' => 10, null, 'order' => array('Lesson.lesson_order' => 'asc')));
+		$this->paginate = array('Lesson' => array('conditions'=> array('Lesson.course_id = ' => $courseId),
+			 'limit' => 10, null, 'order' => array('Lesson.lesson_order' => 'asc')));
 
         $lessons = $this->paginate('Lesson');
         
@@ -29,12 +30,18 @@ class LessonsController extends AppController {
 		if(!empty($this->data)) {
 			if($this->Lesson->save($this->data)) {
 				$this->Session->setFlash('New Lesson has been added');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index', $this->data['Lesson']['course_id']));
 			} else {
 				$this->Session->setFlash('Error: New Lesson has not been added');
 			}
+		}else {
+			$this->loadModel('Course');
+			$this->Course->id = $courseId;
+	        $course = $this->Course->read();
+	        $this->set('course', $course);
+	        $this->set('courseId', $courseId);
 		}
-		$this->set('courseId', $courseId);
+			
 	}
 	
 	function edit($id = null) {
@@ -42,11 +49,16 @@ class LessonsController extends AppController {
 		$this->Lesson->read();
 		$lesson = $this->Lesson->data;
 		$this->set('lesson', $lesson);
+		
+		$this->loadModel('Course');
+		$this->Course->id = $this->data['Lesson']['course_id'];
+		$course = $this->Course->read();
+		$this->set('course', $course);
 
 		if(!empty($this->data)) {
 			if($this->Lesson->save($this->data)) {
 				$this->Session->setFlash('Lesson has been updated');
-				$this->redirect(array('action' => 'index'));
+				$this->redirect(array('action' => 'index', $this->data['Lesson']['course_id']));
 			} else {
 				$this->Session->setFlash('Error: Lesson has not been updated');
 			}
@@ -55,10 +67,18 @@ class LessonsController extends AppController {
 	
 	function delete($lessonId = null) {
 		if(!empty($lessonId)) {
+			$this->Lesson->id = $lessonId;
+			$lesson = $this->Lesson->read();
 			$this->Lesson->delete($lessonId);
 			$this->Session->setFlash('Lesson ' + $lessonId + " successfully removed.");
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index', $lesson['Lesson']['course_id']));
 		}
+	}
+	
+	function view($lessonId = null) {
+		$this->Lesson->id = $lessonId;
+		$lesson = $this->Lesson->read();
+		$this->set('lesson', $lesson);
 	}
 }
 

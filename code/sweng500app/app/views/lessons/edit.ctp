@@ -38,16 +38,17 @@
         });
 </script>
 <div>
-    <h2>New Lesson for <?php echo $course['Course']['course_name'] ?></h2>
+    <h2>Edit Lesson for <?php echo $course['Course']['course_name'] ?></h2>
     
-    <?php echo $this->Form->create('Lesson', array('action'=>'add')); ?>
-    <?php echo $this->Form->hidden('course_id', array('value'=>$course['Course']['id'])); ?>
+    <?php echo $this->Form->create('Lesson', array('action'=>'edit')); ?>
+    <?php echo $this->Form->hidden('course_id', array('value'=>$lesson['Lesson']['course_id'])); ?>
+    <?php echo $this->Form->hidden('id', array('value'=>$lesson['Lesson']['id'])); ?>
     <table class="table">
         <tr>
-            <td><?php echo $this->Form->input('name', array('maxlength'=>'50','label'=>'Lesson Name'));?></td>
+            <td><?php echo $this->Form->input('name', array('maxlength'=>'50','label'=>'Lesson Name', 'value'=>$lesson['Lesson']['name']));?></td>
         </tr>
         <tr>
-        	<td><?php echo $this->Form->textarea('main_content', array('label' => 'Lesson Text', 'class' => 'tinymce')); ?></td>
+        	<td><?php echo $this->Form->textarea('main_content', array('label' => 'Lesson Text', 'class' => 'tinymce', 'value'=>$lesson['Lesson']['main_content'])); ?></td>
         </tr>
         <tr>
             <td><?php echo $this->Form->button('Submit', array('type'=>'submit','class'=>'btn btn-success'));?></td>
