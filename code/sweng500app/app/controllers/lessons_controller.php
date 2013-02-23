@@ -16,6 +16,11 @@ class LessonsController extends AppController {
 		$this->paginate = array('Lesson' => array('limit' => 10, null, 'order' => array('Lesson.lesson_order' => 'asc')));
 
         $lessons = $this->paginate('Lesson');
+        
+        $this->loadModel('Course');
+        $this->Course->id = $courseId;
+        $course = $this->Course->read();
+        $this->set('course', $course);
 
         $this->set('lessons', $lessons);
 	}
