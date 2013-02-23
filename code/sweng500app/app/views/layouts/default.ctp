@@ -5,7 +5,7 @@
     <title><?php echo 'Team 3 eLearning System - '. $title_for_layout; ?></title>
     <?php echo $this->Html->meta('icon'); ?>
     <?php
-        echo $this->Html->script(array(/*'jquery-1.9.1.min.js',*/'bootstrap.min.js'));
+        echo $this->Html->script(array('jquery-1.9.1.min.js','bootstrap.min.js', 'tiny_mce/jquery.tinymce.js'));
         echo $this->Html->css(array('bootstrap','stylesheet-custom'));
         echo $scripts_for_layout;
     ?>

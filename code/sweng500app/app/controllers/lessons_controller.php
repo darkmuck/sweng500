@@ -25,7 +25,7 @@ class LessonsController extends AppController {
         $this->set('lessons', $lessons);
 	}
 	
-	function add() {
+	function add($courseId = null) {
 		if(!empty($this->data)) {
 			if($this->Lesson->save($this->data)) {
 				$this->Session->setFlash('New Lesson has been added');
@@ -34,6 +34,7 @@ class LessonsController extends AppController {
 				$this->Session->setFlash('Error: New Lesson has not been added');
 			}
 		}
+		$this->set('courseId', $courseId);
 	}
 	
 	function edit($id = null) {

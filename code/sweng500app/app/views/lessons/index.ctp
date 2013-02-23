@@ -11,10 +11,10 @@
 ?>
 
 <div>
-    <h2>Lessons For Course <?php echo $this->course['Course']['course_name']?></h2>
+    <h2>Lessons For Course <?php echo $course['Course']['course_name']?></h2>
     
     <?php
-        echo '<p>'. $this->Form->button('Add Lesson', array('onClick'=>"location.href='".$this->Html->url('/Lessons/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+        echo '<p>'. $this->Form->button('Add Lesson', array('onClick'=>"location.href='".$this->Html->url('/Lessons/add/'.$course['Course']['id'])."'", 'class'=>'btn btn-primary')) .'</p>';
     ?>
 
 <table class="table">
