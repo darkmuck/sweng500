@@ -79,6 +79,18 @@ CREATE TABLE lesson_contents (
     PRIMARY KEY(id)
 ); 
 
+CREATE TABLE courses (
+    id INTEGER(8) NOT NULL AUTO_INCREMENT,
+    course_number VARCHAR(6) NOT NULL,
+    course_name VARCHAR(50) NOT NULL,
+    prerequisite VARCHAR(6),
+    lesson_completion INTEGER (8) NOT NULL,
+    quiz_passing_score INTEGER (8) NOT NULL,
+    instructor VARCHAR(50) NOT NULL,
+    course_status VARCHAR(1) NOT NULL,
+    PRIMARY KEY (id)
+);
+
 INSERT INTO types (type_name, created, modified) VALUES ('Administrator', NOW(), NOW());
 INSERT INTO types (type_name, created, modified) VALUES ('Instructor', NOW(), NOW());
 INSERT INTO types (type_name, created, modified) VALUES ('Student', NOW(), NOW());
@@ -88,6 +100,8 @@ INSERT INTO users (username, password, enabled, type_id, last_name, middle_name,
     VALUES ('tester', PASSWORD('tester'), 1, 1, 'Tester', 'Tester', 'Tester', NOW(), NOW());
 INSERT INTO types_users (type_id, user_id) VALUES (1, 1);
 INSERT INTO types_permissions (type_id, permission_id) VALUES (1, 1);
+
+INSERT INTO courses (course_number, course_name, prerequisite, lesson_completion, quiz_passing_score, instructor, course_status) VALUES ("SWE100", "Writing Software Requirements Specifications", "", 100, 80, "Singer", "U");
 
 -- ------------------------------------------------
 -- TO-DO: Add all permissions and types_permissions

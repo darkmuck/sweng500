@@ -24,3 +24,5 @@
 
 
 Router::connect('/', array('controller' => 'users', 'action' => 'start', 'login'));
+
+Router::connect('/', array('controller' => 'courses', 'action' => 'index'));
