@@ -56,6 +56,29 @@ CREATE TABLE types_users (
     ,PRIMARY KEY(id)
 );
 
+CREATE TABLE lessons (
+    id  INTEGER(8) NOT NULL AUTO_INCREMENT,
+    course_id INTEGER(8) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    created DATETIME DEFAULT NULL,
+    modified DATETIME DEFAULT NULL,
+    main_content TEXT NOT NULL,
+    lesson_order INTEGER(2) NOT NULL,
+    PRIMARY KEY(id)
+); 
+
+CREATE TABLE lesson_contents (
+    id  INTEGER(8) NOT NULL AUTO_INCREMENT,
+    lesson_id INTEGER(8) NOT NULL,
+    filename VARCHAR(100) NOT NULL,
+    filesize INTEGER(8) NOT NULL,
+    file LONGBLOB NOT NULL,
+    filetype VARCHAR(100) NOT NULL,
+    created DATETIME DEFAULT NULL,
+    modified DATETIME DEFAULT NULL,
+    PRIMARY KEY(id)
+); 
+
 INSERT INTO types (type_name, created, modified) VALUES ('Administrator', NOW(), NOW());
 INSERT INTO types (type_name, created, modified) VALUES ('Instructor', NOW(), NOW());
 INSERT INTO types (type_name, created, modified) VALUES ('Student', NOW(), NOW());
