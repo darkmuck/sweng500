@@ -4,7 +4,7 @@ CREATE TABLE lessons (
     name VARCHAR(100) NOT NULL,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
-    main_content VARCHAR(2000) NOT NULL,
+    main_content TEXT NOT NULL,
     lesson_order INTEGER(2) NOT NULL,
     PRIMARY KEY(id)
 ); 

@@ -12,7 +12,7 @@
 class Lesson extends AppModel {
 
     var $name = 'Lesson';
-    
+    public $hasMany = array('LessonContent');
     
 
 }

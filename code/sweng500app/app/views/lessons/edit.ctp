@@ -54,5 +54,30 @@
             <td><?php echo $this->Form->button('Submit', array('type'=>'submit','class'=>'btn btn-success'));?></td>
         </tr>
     </table>
+    
+    <h3>Supporting Content for Lesson</h3>
+    <?php
+        echo '<p>'. $this->Form->button('Add Content', array('type'=>'button','onClick'=>"location.href='".$this->Html->url('/lesson_contents/upload/'.$lesson['Lesson']['id'])."'", 'class'=>'btn btn-primary')) .'</p>';
+    ?>
+    <table class="table">
+    	<tr>
+    		<th>Filename</th>
+    		<th>Type</th>
+    		<th>URL</th>
+    		<th>Actions</th>
+    	</tr>
+        <?php foreach($lesson['LessonContent'] as $lessonContent) : ?>
+        <tr>
+        	<td><?php echo $lessonContent['filename']; ?></td>
+        	<td><?php echo $lessonContent['filetype']; ?></td>
+        	<td><?php echo $this->Html->url('/lesson_contents/download/'. $lessonContent['id']) ?></td>
+        	<td>
+        		<?php echo $this->Form->button('Download', array('type'=>'button', 'class'=>'btn btn-warning', 'onClick'=>"location.href='".$this->Html->url('/lesson_contents/download/'.$lessonContent['id'])."'")) ?>
+        		<?php echo $this->Form->button('Delete', array('type'=>'button', 'class'=>'btn btn-danger', 'onClick'=>"location.href='".$this->Html->url('/lesson_contents/delete/'.$lessonContent['id'])."'")) ?>
+        	</td>
+       	</tr>
+        <?php endforeach; ?>
+    </table>
+    
     <?php echo $this->Form->end();?>
 </div>
