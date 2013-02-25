@@ -23,7 +23,6 @@
             echo $this->Html->link('Home', array('controller'=>'Users','action'=>'start'),array('class'=>'brand'));
             echo '<ul class="nav">';
             echo '<li>'. $this->Html->link('Courses', array('controller'=>'Courses','action'=>'index')) .'</li>';
-            echo '<li>'. $this->Html->link('Lessons', array('controller'=>'Lessons','action'=>'index')) .'</li>';
             echo '<li>'. $this->Html->link('Grades', array('controller'=>'Grades','action'=>'index')) .'</li>';
             echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
             if ($this->Session->check('Auth.User') == 0) {

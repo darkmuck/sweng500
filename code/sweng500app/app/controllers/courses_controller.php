@@ -56,19 +56,20 @@ class CoursesController extends AppController {
 	 function add ()
     {
     	$this->loadModel('User');
-    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$users = $this->Course->User->find('list', array('fields' => array('name'), 
+			'conditions' => array('type_id = 2')));
     	$courses = $this->Course->find('list', array('fields' => array('course_name')));
     	$this->set(compact('users', 'courses'));
     	    
-	if (!empty($this->data)){
-		if ($this->Course->save($this->data))
-		{
-			$this->Session->setFlash('New course has been added');
-			$this->redirect(array('action' => './index'));
-		} else {
-			$this->Session->setFlash('Error: New course has not been added');
+		if (!empty($this->data)){
+			if ($this->Course->save($this->data))
+			{
+				$this->Session->setFlash('New course has been added');
+				$this->redirect(array('action' => './index'));
+			} else {
+				$this->Session->setFlash('Error: New course has not been added');
+			}
 		}
-	}
     }
 	
 	function delete($id = null) {
@@ -89,25 +90,26 @@ class CoursesController extends AppController {
 	
 	function edit($id = null) 
     {
-	$this->Course->id = $id;
-	$this->Course->read();
-	$course = $this->Course->data;
-	$this->set('course', $course);
+		$this->Course->id = $id;
+		$this->Course->read();
+		$course = $this->Course->data;
+		$this->set('course', $course);
 	
     	$this->loadModel('User');
-    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$users = $this->Course->User->find('list', array('fields' => array('name'), 
+			'conditions' => array('type_id = 2')));
     	$courses = $this->Course->find('list', array('fields' => array('course_name')));
     	$this->set(compact('users', 'courses'));
     	
-	if (!empty($this->data)){
-		if ($this->Course->save($this->data)) 
-		{             
-			$this->Session->setFlash('Course has been saved');             
-			$this->redirect(array('action' => './index'));         
-		} else {
-			$this->Session->setFlash('Error: unable to edit course');
+		if (!empty($this->data)){
+			if ($this->Course->save($this->data)) 
+			{             
+				$this->Session->setFlash('Course has been saved');             
+				$this->redirect(array('action' => './index'));         
+			} else {
+				$this->Session->setFlash('Error: unable to edit course');
+			}
 		}
-	}
     }
 }
 
