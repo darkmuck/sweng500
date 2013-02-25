@@ -5,8 +5,8 @@
  * File: index_under_development.ctp
  * Description: This view provides a listing of under development courses in the database
  * Created: 2013-02-21
- * Modified: 2013-02-21 10:29
- * Modified By: David Singer
+ * Modified: 2013-02-24 18:37
+ * Modified By: William DiStefano
 */
 ?>
 
@@ -14,7 +14,9 @@
     <h2>Courses Under Development</h2>
     
     <?php
-        echo '<p>'. $this->Form->button('Add Course', array('onClick'=>"location.href='".$this->Html->url('/courses/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    	if($Auth['User']['type_id'] == 1) {
+        	echo '<p>'. $this->Form->button('Add Course', array('onClick'=>"location.href='".$this->Html->url('/courses/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    	}
     ?>
     
     <small>
@@ -31,7 +33,7 @@
          <th><?php echo $this->Paginator->sort('id'); ?></th>
          <th><?php echo $this->Paginator->sort('course_number'); ?></th>
          <th><?php echo $this->Paginator->sort('course_name'); ?></th>
-         <th><?php echo $this->Paginator->sort('instructor'); ?></th>
+         <th><?php echo $this->Paginator->sort('user_id'); ?></th>
          <th><?php echo $this->Paginator->sort('course_status'); ?></th>
          <th>Actions</th>
      </tr> 
@@ -42,7 +44,7 @@
         <td><?php echo $course['Course']['id']; ?></td>
         <td><?php echo $course['Course']['course_number']; ?></td>
         <td><?php echo $course['Course']['course_name']; ?></td>
-		<td><?php echo $course['Course']['instructor']; ?></td>		
+		<td><?php echo $course['User']['name']; ?></td>		
         <td>
             <?php 
                 switch ($course['Course']['course_status']) {
@@ -63,8 +65,12 @@
         <td>
             <?php 
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
-            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
-            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$course['Course']['id']))."'", 'class'=>'btn btn-danger'));
+            if($Auth['User']['id'] == $course['Course']['user_id']) {
+            	echo $this->Form->button('Manage Lessons', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'Lessons','action'=>'index',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
+            } else if ($Auth['User']['type_id'] == 1) {
+	            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
+	            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$course['Course']['id']))."'", 'class'=>'btn btn-danger'));
+	        }
             ?>
         </td>
     </tr>

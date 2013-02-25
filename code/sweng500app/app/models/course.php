@@ -12,6 +12,10 @@
 class Course extends AppModel {
 
     var $name = 'Course';
+    var $belongsTo = array(
+    	'User' => array(
+    		'className' => 'User')
+    );
 	
 	var $validate = array(
 		'course_number' => array(
@@ -41,12 +45,6 @@ class Course extends AppModel {
 			'course_nameMaxLen' => array(
 				'rule' => array('maxLength', 50),  
 				'message' => 'Course Name maximum length is 50 characters',
-			),
-		),
-		'prerequisite' => array(
-			'prerequisiteMaxLen' => array(
-				'rule' => array('maxLength', 6),  
-				'message' => 'Prerequisite maximum length is 6 characters',
 			),
 		),
 		'lesson_completion' => array(
@@ -84,18 +82,6 @@ class Course extends AppModel {
 				'rule' => array('range', -1, 101),  
 				'message' => 'Please enter a number between 0 and 100.',
 			)
-		),
-		'instructor' => array(
-			'instructorNotEmpty' => array(
-				'rule' => 'notEmpty', 
-				'required' => true, 
-				'message' => 'An Instructor is required.',
-				'last' => true
-			),
-			'instructorMaxLen' => array(
-				'rule' => array('maxLength', 50),  
-				'message' => 'Instructor maximum length is 50 characters',
-			),
 		),
 		'course_status' => array(
 			'course_statusNotEmpty' => array(
