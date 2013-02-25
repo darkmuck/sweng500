@@ -5,8 +5,8 @@
  * File: add.ctp
  * Description: This view adds course data
  * Created: 2013-02-21
- * Modified: 2013-02-21 16:13
- * Modified By: David Singer
+ * Modified: 2013-02-24 18:14
+ * Modified By: William DiStefano
 */
 ?>
 
@@ -22,7 +22,7 @@
             <td><?php echo $this->Form->input('course_name', array('maxlength'=>'50','label'=>'Course Name'));?></td>
         </tr>
         <tr>
-            <td><?php echo $this->Form->input('prerequisite', array('maxlength'=>'50','label'=>'Prerequisite'));?></td>
+            <td><?php echo $this->Form->input('course_id', array('empty'=>true,'label'=>'Prerequisite'));?></td>
         </tr>
         <tr>
             <td><?php echo $this->Form->input('lesson_completion', array('maxlength'=>'50','label'=>'Lesson Completion Percentage'));?></td>
@@ -31,7 +31,7 @@
             <td><?php echo $this->Form->input('quiz_passing_score', array('maxlength'=>'50','label'=>'Quiz Passing Score Percentage'));?></td>
         </tr>
 		<tr>
-            <td><?php echo $this->Form->input('instructor', array('maxlength'=>'50','label'=>'Instructor'));?></td>
+            <td><?php echo $this->Form->input('user_id', array('empty'=>true,'label'=>'Instructor'));?></td>
         </tr>
         <tr>
             <td><?php echo $this->Form->input('course_status', array('maxlength'=>'50','label'=>'Course Status', 'options'=>array('U'=>'Under Development')));?></td>

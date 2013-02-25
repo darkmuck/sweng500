@@ -5,8 +5,8 @@
  * File: index_current.ctp
  * Description: This view provides a listing of current courses in the database
  * Created: 2013-02-21
- * Modified: 2013-02-21 10:29
- * Modified By: David Singer
+ * Modified: 2013-02-24 18:35
+ * Modified By: William DiStefano
 */
 ?>
 
@@ -31,7 +31,7 @@
          <th><?php echo $this->Paginator->sort('id'); ?></th>
          <th><?php echo $this->Paginator->sort('course_number'); ?></th>
          <th><?php echo $this->Paginator->sort('course_name'); ?></th>
-         <th><?php echo $this->Paginator->sort('instructor'); ?></th>
+         <th><?php echo $this->Paginator->sort('user_id'); ?></th>
          <th><?php echo $this->Paginator->sort('course_status'); ?></th>
          <th>Actions</th>
      </tr> 
@@ -42,7 +42,7 @@
         <td><?php echo $course['Course']['id']; ?></td>
         <td><?php echo $course['Course']['course_number']; ?></td>
         <td><?php echo $course['Course']['course_name']; ?></td>
-		<td><?php echo $course['Course']['instructor']; ?></td>		
+		<td><?php echo $course['User']['name']; ?></td>		
         <td>
             <?php 
                 switch ($course['Course']['course_status']) {

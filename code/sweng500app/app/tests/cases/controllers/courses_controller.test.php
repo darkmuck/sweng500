@@ -5,8 +5,8 @@
  * File: courses_controller.test.php
  * Description: This file tests the courses controller
  * Created: 2013-02-23
- * Modified: 2013-02-23 18:21
- * Modified By: David Singer
+ * Modified: 2013-02-24 18:50
+ * Modified By: William DiStefano
 */
 
 /*This class is to override some of the functionality that breaks testing of controllers
@@ -37,10 +37,10 @@ class CourseControllerTest extends CakeTestCase {
 	public $debugCourse = array('id' => 10,
 		'course_number' => 'testc1', 
 		'course_name' => 'testcourse1',
-		'prerequisite' => 'testp1',
+		'course_id' => 1,
 		'lesson_completion' => 100,
 		'quiz_passing_score' => 100,
-		'instructor' => 'testinstructor1',
+		'user_id' => 1,
 		'course_status' => 'C');
 
 	function startTest() {

@@ -5,8 +5,8 @@
  * File: CoursesController.php
  * Description: This controller provides request handling for courses data
  * Created: 2013-02-21
- * Modified: 2013-02-21 09:53
- * Modified By: David Singer
+ * Modified: 2013-02-24 18:45
+ * Modified By: William DiStefano
 */
 
 class CoursesController extends AppController {
@@ -17,36 +17,49 @@ class CoursesController extends AppController {
         $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
 
         $courses = $this->paginate('Course');
-
-        $this->set('courses', $courses);
+        
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$this->set(compact('users', 'courses'));
     }
 	
 	function indexCurrent() {
         $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'C'));
-
-        $this->set('courses', $courses);
+        
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$this->set(compact('users', 'courses'));
     }
 	
 	function indexArchived() {
         $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'A'));
-
-        $this->set('courses', $courses);
+        
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$this->set(compact('users', 'courses'));
     }
 	
 	function indexUnderDevelopment() {
         $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'U'));
-
-        $this->set('courses', $courses);
+        
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$this->set(compact('users', 'courses'));
     }
 	
-	 function add () 
+	 function add ()
     {
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$courses = $this->Course->find('list', array('fields' => array('course_name')));
+    	$this->set(compact('users', 'courses'));
+    	    
 	if (!empty($this->data)){
 		if ($this->Course->save($this->data))
 		{
@@ -67,7 +80,11 @@ class CoursesController extends AppController {
 	function view($id = null) {
 	$this->Course->id = $id;
 	$course = $this->Course->read();
-	$this->set('course', $course);
+	
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$courses = $this->Course->find('list', array('fields' => array('course_name')));
+    	$this->set(compact('course','users', 'courses'));
     }
 	
 	function edit($id = null) 
@@ -76,6 +93,12 @@ class CoursesController extends AppController {
 	$this->Course->read();
 	$course = $this->Course->data;
 	$this->set('course', $course);
+	
+    	$this->loadModel('User');
+    	$users = $this->Course->User->find('list', array('fields' => array('name')));
+    	$courses = $this->Course->find('list', array('fields' => array('course_name')));
+    	$this->set(compact('users', 'courses'));
+    	
 	if (!empty($this->data)){
 		if ($this->Course->save($this->data)) 
 		{             

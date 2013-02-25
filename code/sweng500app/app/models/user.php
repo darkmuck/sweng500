@@ -14,6 +14,11 @@ class User extends AppModel {
     var $name = 'User';
     
     var $virtualFields = array('name' => "CONCAT(User.first_name, ' ', IFNULL(User.middle_name,''), ' ', User.last_name)");
+    
+    var $hasMany = array(
+    	'Course' => array(
+    		'className' => 'Course')
+    );
 
     var $hasAndBelongsToMany = array(
         'Type' => array(
