@@ -14,7 +14,9 @@
     <h2>Current Courses</h2>
     
     <?php
-        echo '<p>'. $this->Form->button('Add Course', array('onClick'=>"location.href='".$this->Html->url('/courses/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    	if($Auth['User']['type_id'] == 1) {
+        	echo '<p>'. $this->Form->button('Add Course', array('onClick'=>"location.href='".$this->Html->url('/courses/add')."'", 'class'=>'btn btn-primary')) .'</p>';
+    	}
     ?>
     
     <small>
@@ -63,8 +65,12 @@
         <td>
             <?php 
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
-            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
-            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$course['Course']['id']))."'", 'class'=>'btn btn-danger'));
+            if($Auth['User']['id'] == $course['Course']['user_id']) {
+            	echo $this->Form->button('Manage Lessons', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'Lessons','action'=>'index',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
+            } else if ($Auth['User']['type_id'] == 1) {
+	            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
+	            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$course['Course']['id']))."'", 'class'=>'btn btn-danger'));
+	        }
             ?>
         </td>
     </tr>
