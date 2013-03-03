@@ -27,7 +27,7 @@
 					echo 'Under Development';
 					break;
 				case 'C':
-					echo 'Current';
+					echo 'Active';
 					break;
 				case 'A':
 					echo 'Archived';

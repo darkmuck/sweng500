@@ -13,7 +13,8 @@
 <div>
     <h2>New Course</h2>
     
-    <?php echo $this->Form->create('Course', array('action'=>'add')); ?>
+    <?php echo $this->Form->create('Course', array('action'=>'add'));
+		echo $this->Form->hidden('course_status', array('value'=>'U')); ?>
     <table class="table">
        <tr>
             <td><?php echo $this->Form->input('course_number', array('maxlength'=>'50','label'=>'Course Number'));?></td>
@@ -32,9 +33,6 @@
         </tr>
 		<tr>
             <td><?php echo $this->Form->input('user_id', array('empty'=>true,'label'=>'Instructor'));?></td>
-        </tr>
-        <tr>
-            <td><?php echo $this->Form->input('course_status', array('maxlength'=>'50','label'=>'Course Status', 'options'=>array('U'=>'Under Development')));?></td>
         </tr>
         <tr>
             <td><?php echo $this->Form->button('Submit', array('type'=>'submit','class'=>'btn btn-success'));?></td>
