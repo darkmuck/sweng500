@@ -37,7 +37,7 @@
             <td><?php echo $this->Form->input('user_id', array('empty'=>true,'label'=>'Instructor', 'selected'=>$course['User']['id']));?></td>
         </tr>
         <tr>
-            <td><?php echo $this->Form->input('course_status', array('maxlength'=>'50','label'=>'Course Status', 'value'=>$course['Course']['course_status'], 'options'=>array('U'=>'Under Development', 'C'=>'Current', 'A'=>'Archived')));?></td>
+            <td><?php echo $this->Form->input('course_status', array('maxlength'=>'50','label'=>'Course Status', 'value'=>$course['Course']['course_status'], 'options'=>array('C'=>'Active', 'A'=>'Archived','U'=>'Under Development')));?></td>
         </tr>
         <tr>
             <td><?php echo $this->Form->button('Submit', array('type'=>'submit','class'=>'btn btn-success'));?></td>

@@ -22,7 +22,7 @@
     <small>
     <strong>&nbsp;Type:  </strong>
     <?php echo '<strong>'.$this->Html->link('All', array('action'=>'./index')) .'</strong>  |  '; ?>
-    <?php echo $this->Html->link('Current', array('action'=>'indexCurrent')) .'  |  '; ?>
+    <?php echo $this->Html->link('Active', array('action'=>'indexCurrent')) .'  |  '; ?>
     <?php echo $this->Html->link('Archived', array('action'=>'indexArchived')) .'  |  '; ?>
     <?php echo $this->Html->link('Under Development', array('action'=>'indexUnderDevelopment')); ?>
     </small>
@@ -49,7 +49,7 @@
             <?php 
                 switch ($course['Course']['course_status']) {
                     case 'C':
-                    	    echo 'Current';
+                    	    echo 'Active';
                     	    break;
                     case 'A':
                     	    echo 'Archived';
@@ -69,7 +69,7 @@
             	echo $this->Form->button('Manage Lessons', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'Lessons','action'=>'index',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
             } else if ($Auth['User']['type_id'] == 1) {
 	            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
-	            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$course['Course']['id']))."'", 'class'=>'btn btn-danger'));
+	            echo $this->Html->link('Delete', array('controller' => 'courses', 'action' => 'delete', $course['Course']['id']), array('class' => 'btn btn-danger'), 'Are you sure you want to delete this course?');
 	        }
             ?>
         </td>

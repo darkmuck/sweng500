@@ -64,7 +64,7 @@
             <?php 
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$user['User']['id']))."'", 'class'=>'btn btn-info'));
             echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$user['User']['id']))."'", 'class'=>'btn btn-warning'));
-            echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'disable',$user['User']['id']))."'", 'class'=>'btn btn-danger'));
+            echo $this->Html->link('Delete', array('controller' => 'users', 'action' => 'delete', $user['User']['id']), array('class' => 'btn btn-danger'), 'Are you sure you want to delete this user?');
             ?>
         </td>                          
     </tr>
