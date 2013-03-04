@@ -21,6 +21,10 @@ class CoursesController extends AppController {
     	$this->loadModel('User');
     	$users = $this->Course->User->find('list', array('fields' => array('name')));
     	$this->set(compact('users', 'courses'));
+                   if (($this->Auth->user('type_id')) ==3)   //Student (not Admin or Instructor)
+                  {
+                         $this->render('index_student');          //Redirect to limited functionality page
+                  }
     }
 	
 	function indexCurrent() {
@@ -88,6 +92,34 @@ class CoursesController extends AppController {
     	$this->set(compact('course','users', 'courses'));
     }
 	
+
+	function enroll($id = null) {
+                   $this->Course->Roster->create();
+                   $this->Course->Roster->set(array(
+                            'course_id' => $id,                   
+                            'user_id' => $this->Auth->user('id')
+                   ));
+                  $this->Course->Roster->save($this->data);
+                  $this->Session->setFlash('Course has been added to your Course Roster');
+                  $this->redirect(array('action'=>'./index'));
+
+    }
+
+
+	function search() {  $this->render('search');  }
+	function searchResults() {
+
+                  if(isset($this->data )) {    //not working - always returns true even if field is blank
+ 	       $data = $this->paginate('Course', array('','Course.course_name LIKE' => '%' . $this->data['Course']['course_name'] . '%'));
+	       $this->set('courses', $data);
+                          $this->render('index_student');
+	}else {
+                          $this->Session->setFlash('Please enter keyword to search for'); 
+                          $this->redirect(array('controller'=>'courses', 'action' => 'search'));
+                  }                    
+    }
+
+
 	function edit($id = null) 
     {
 		$this->Course->id = $id;
