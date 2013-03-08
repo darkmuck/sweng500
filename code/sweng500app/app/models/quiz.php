@@ -10,7 +10,11 @@
 */
 
 class Quiz extends AppModel {
+	var $recursive = 2;
 
-    public  $useTable = false;
+    var $name = 'Quiz';
+    
+    var $hasMany = array('Question');
+    
 
 }
