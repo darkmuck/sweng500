@@ -10,7 +10,9 @@
 */
 
 class QuizSubmission extends AppModel {
+	
+	var $hasOne = array('User');
 
-    var $useTable = false;
+    var $hasMany = 'SubmittedAnswer';
 
 }
