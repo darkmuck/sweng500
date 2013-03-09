@@ -8,4 +8,11 @@
  * Modified: Mar 8, 2013 10:56:22 AM
  * Modified By: Kevin Scheib
 */
+
+class SubmittedAnswer extends AppModel {
+	var $actsAs = 'Containable';
+	var $name = 'SubmittedAnswer';
+	var $belongsTo = array('QuizSubmission', 'Question');
+
+}
 ?>

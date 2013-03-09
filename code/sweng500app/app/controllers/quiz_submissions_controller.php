@@ -11,12 +11,20 @@
 
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
+	var $uses = array('QuizSubmission');
+	
 	function submit($lessonId = null, $courseId = null) {
 			
 	}
 	
 	function results($quizSubmissionId = null) {
+		$quizsub = $this->QuizSubmission->find('first', 
+			array('conditions'=> array('QuizSubmission.id' => 1),
+		 		'recursive' => 2)
+ 		);
 		
+
+		die(debug($quizsub));
 	}
 	
 
