@@ -10,9 +10,18 @@
 */
 
 class QuizSubmission extends AppModel {
+	var $actsAs = 'Containable';
+	var $recursive = 2;
+	var $name = 'QuizSubmission';
 	
-	var $hasOne = array('User');
-
-    var $hasMany = 'SubmittedAnswer';
+//	var $belongsTo = array('Quiz', 'User');
+	
+    var $hasMany = array('SubmittedAnswer' => 
+    	array('className' => 'SubmittedAnswer',
+    		'foreignKey' => 'quiz_submission_id',
+    		'dependent' => true,
+    		
+    	)
+	);
 
 }

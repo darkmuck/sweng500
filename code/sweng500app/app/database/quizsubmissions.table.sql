@@ -5,17 +5,18 @@ CREATE TABLE IF NOT EXISTS quiz_submissions (
     grade FLOAT NULL,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
-    PRIMARY KEY (id, quiz_id, user_id)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS submitted_answers (
+    id INTEGER(8) NOT NULL AUTO_INCREMENT,
     quiz_submission_id INTEGER(8) NOT NULL,
     question_id INTEGER(8) NOT NULL,
     answer VARCHAR(50) NOT NULL,
     points FLOAT NULL,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
-    PRIMARY KEY (quiz_submission_id, question_id)
+    PRIMARY KEY (id)
 );
 
 ALTER TABLE quiz_submissions ADD CONSTRAINT quiz_sub_user_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
