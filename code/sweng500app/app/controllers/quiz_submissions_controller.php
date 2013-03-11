@@ -11,7 +11,7 @@
 
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission');
+	var $uses = array('QuizSubmission', 'Quiz', 'SubmittedAnswer', 'QuizGrader');
 	
 	function submit($lessonId = null, $courseId = null) {
 			
@@ -22,6 +22,10 @@ class QuizSubmissionsController extends AppController {
 			array('conditions'=> array('QuizSubmission.id' => 1),
 		 		'recursive' => 2)
  		);
+ 		
+ 		$quiz = $this->Quiz->findById($quizsub['QuizSubmission']['quiz_id']);
+ 		
+ 		debug($this->QuizGrader->grade($quiz, $quizsub));
 		
 
 		die(debug($quizsub));
