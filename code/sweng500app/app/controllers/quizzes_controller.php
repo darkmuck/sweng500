@@ -5,12 +5,12 @@
  * File: quiz_controller.php
  * Description: 
  * Created: Feb 22, 2013
- * Modified: 2013-03-10 14:55
+ * Modified: 2013-03-11 21:00
  * Modified By: William DiStefano
 */
 
-class QuizesController extends AppController {
-	var $name = 'Quizes';
+class QuizzesController extends AppController {
+	var $name = 'Quizzes';
 	var $uses = array('Quiz', 'Question', 'Answer', 'Lesson');
 	
 	function index() {}
@@ -22,7 +22,7 @@ class QuizesController extends AppController {
 			
 			$this->Quiz->save($this->data);
 			$quizId = $this->Quiz->getLastInsertId();
-			$this->redirect(array('controller'=>'quizes','action'=>'edit', $quizId));
+			$this->redirect(array('controller'=>'quizzes','action'=>'edit', $quizId));
 		} else {
 			$this->Session->setFlash('Error, invalid course or lesson');
 			$this->redirect(array('controller'=>'lessons','action'=>'index'));
@@ -34,9 +34,21 @@ class QuizesController extends AppController {
 			$this->Quiz->Question->save($this->data);
 			$last = $this->Quiz->Question->getLastInsertId();
 			$question = $this->Quiz->Question->find('first', array('id'=>$last));
-			$this->redirect(array('controller'=>'Quizes','action'=>'edit', $question['Question']['quiz_id']));
+			$this->redirect(array('controller'=>'Quizzes','action'=>'edit', $question['Question']['quiz_id']));
 		} else {
-			$this->Session->setFlash('Error, invalid course or lesson');
+			$this->Session->setFlash('Error, unable to add question');
+			$this->redirect(array('controller'=>'lessons','action'=>'index'));
+		}
+	}
+	
+	function addAnswer() {
+		if(!empty($this->data)) {
+			$this->Quiz->Question->Answer->save($this->data);
+			$last = $this->Quiz->Question->Answer->getLastInsertId();
+			$answer = $this->Quiz->Question->Answer->find('first', array('id'=>$last));
+			$this->redirect(array('controller'=>'Quizzes','action'=>'editAnswers', $answer['Answer']['question_id']));
+		} else {
+			$this->Session->setFlash('Error, unable to add answer');
 			$this->redirect(array('controller'=>'lessons','action'=>'index'));
 		}
 	}
@@ -56,6 +68,27 @@ class QuizesController extends AppController {
 		
 	}
 	
+	function editAnswers($questionId = null) {
+		$question = $this->Quiz->Question->find('first', array('conditions' => array('id' => $questionId)));
+		if (empty($question)) {
+			$this->Session->setFlash('Invalid Question');
+			$this->redirect(array('controller'=>'lessons','index'));
+		}
+
+		if (!empty($this->data)) {
+		    if ($this->Quiz->Question->Answer->saveAll($this->data['Answer'])) {
+			$this->Session->setFlash('The answers have been saved.');
+			$this->redirect(array('controller'=>'quizzes','action'=>'editAnswers', $questionId));
+		    } else {
+			$this->Session->setFlash('Unable to save answers');
+			$this->redirect(array('controller'=>'lessons','action'=>'index'));
+		    }
+		}
+			
+		$answers = $this->Quiz->Question->Answer->find('all', array('conditions' => array('Answer.question_id' => $questionId)));
+		$this->set(compact('question','answers'));
+	}
+	
 	function delete($id = null, $lessonId = null) {
 		if(!empty($id) && !empty($lessonId)) {
 			$this->Quiz->Question->delete($id);
@@ -70,9 +103,19 @@ class QuizesController extends AppController {
 		if(!empty($id) && !empty($quizId)) {
 			$this->Quiz->Question->delete($id);
 			$this->Session->setFlash('The question has been deleted');
-			$this->redirect(array('controller'=>'quizes','action'=>'edit', $quizId));
+			$this->redirect(array('controller'=>'quizzes','action'=>'edit', $quizId));
 		}
 		$this->Session->setFlash('Invalid Question');
+		$this->redirect(array('controller'=>'lessons','action'=>'index'));
+	}
+	
+	function deleteAnswer($id = null, $questionId = null) {
+		if(!empty($id) && !empty($questionId)) {
+			$this->Quiz->Question->Answer->delete($id);
+			$this->Session->setFlash('The answer has been deleted');
+			$this->redirect(array('controller'=>'quizzes','action'=>'editAnswers', $questionId));
+		}
+		$this->Session->setFlash('Invalid Answer');
 		$this->redirect(array('controller'=>'lessons','action'=>'index'));
 	}
 	

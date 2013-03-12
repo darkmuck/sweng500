@@ -17,10 +17,10 @@
     
     <div id='addQuestion' style='display:none;border:0.5px solid #333333;margin:10px;padding-top:10px;padding-left:10px; width:250px;'>
     <strong>New Question:</strong><br />
-    <?php echo $this->Form->create('Quiz', array('url'=>'/quizes/addQuestion')); ?>
+    <?php echo $this->Form->create('Quiz', array('url'=>'/quizzes/addQuestion')); ?>
     <?php echo $this->Form->hidden('Question.quiz_id', array('value'=>$quiz['Quiz']['id'])); ?>
     <?php echo $this->Form->input('Question.points', array('maxLength'=>'3'));?>
-    <?php echo $this->Form->input('Question.type', array('options'=>array('1'=>'text','2'=>'number','3'=>'date')));?>
+    <?php echo $this->Form->input('Question.type', array('options'=>array('1'=>'text','2'=>'number','3'=>'date','4'=>'multi-choice')));?>
     <?php echo $this->Form->input('Question.question', array('maxLength'=>'150','type'=>'textarea'));?>
     <?php echo $this->Form->button('Submit', array('type'=>'Add','class'=>'btn btn-success'));?>
     <?php echo $this->Form->end(); ?>
@@ -47,14 +47,18 @@
     	                      case '3':
     	                  	  echo 'date';
     	                  	  break;
+    	                      case '4':
+    	                  	  echo 'multi-choice';
+    	                  	  break;
     	                      default:
     	                  	  break;
     	                  }
     	        echo '</td>
     	              <td>'. $question['Question']['question'] .'
-    	        echo </td>
+    	              </td>
     	              <td>';
     	                  echo $this->Form->button('Delete Question', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'deleteQuestion',$question['Question']['id'], $quiz['Quiz']['id']))."'", 'class'=>'btn btn-danger'));
+    	                  if ($question['Question']['type'] == '4') { echo '&nbsp;'. $this->Form->button('Edit Answers', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'editAnswers',$question['Question']['id']))."'", 'class'=>'btn btn-success')); }
     	        echo '</td>
     	        </tr>';
     	} ?>
