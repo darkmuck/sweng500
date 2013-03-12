@@ -82,6 +82,8 @@ class Results {
 	var $points;
 	var $totalPoints;
 	
+	public function Results(){}
+	
 	public function addPoints($points) {
 		$this->points += $points;
 	}
