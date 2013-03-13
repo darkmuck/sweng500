@@ -5,7 +5,7 @@
  * File: App Controller
  * Description: This is the base controller class for the app's controllers
  * Created: 2013-02-08
- * Modified: 2013-02-08 1916
+ * Modified: 2013-03-03 15:00
  * Modified By: William DiStefano
 */
 
@@ -53,14 +53,12 @@ class AppController extends Controller {
             $permissions[]='users:logout';
             App::import('Model', 'User');
             $thisUser = new User;
-            $thisTypes = $thisUser->find(array('User.id'=>$this->Auth->user('id')));
-            $thisTypes = $thisTypes['Type'];
-            foreach($thisTypes as $thisType){
-                $thisPermissions = $thisUser->Type->find(array('Type.id'=>$thisType['id']));
-                $thisPermissions = $thisPermissions['Permission'];
-                foreach($thisPermissions as $thisPermission){
-                    $permissions[]=$thisPermission['permission_name'];
-                }
+            $thisType = $thisUser->find(array('User.id'=>$this->Auth->user('id')));
+            $thisType = $thisType['Type'][0];
+            $thisPermissions = $thisUser->Type->find(array('Type.id'=>$thisType['id']));
+            $thisPermissions = $thisPermissions['Permission'];
+            foreach($thisPermissions as $thisPermission){
+                $permissions[]=$thisPermission['permission_name'];
             }
             $this->Session->write('Permissions',$permissions);
         }else{

@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-08
- * Modified: 2013-02-16 13:30
+ * Modified: 2013-03-03 15:15
  * Modified By: William DiStefano
 */
 
@@ -16,8 +16,44 @@ class UsersController extends AppController {
     function start() {
         //user start page
     }
+    
+    function __checkPermission($action) {
+        $allow = false;
+
+    	if (($action) && ($this->Auth->user('type_id'))) {
+    		$type = $this->Auth->user('type_id');
+    		switch ($action) {
+    		    case 'index':
+    		    	    if ($type == '1') $allow = true; //Allow Administrator
+    		    	    break;
+    		    case 'edit':
+    		    	     if ($type == '1') $allow = true; //Allow Administrator
+    		    	    break;
+    		    case 'add':
+    		    	     if ($type == '1')$allow = true; //Allow Administrator
+    		    	    break;
+    		    case 'view':
+    		    	     if ($type == '1')$allow = true; //Allow Administrator
+    		    	    break;
+    		    case 'delete':
+    		    	     if ($type == '1') $allow = true; //Allow Administrator
+    		    	    break;
+    		    default:
+    		    	    $allow = false; //Deny
+    		}
+    	}
+    	
+    	if ($allow == true) {
+    		return;
+    	} else {
+    	    $this->Session->setFlash('You do not have permission to do this.');
+    	    $this->redirect(array('controller'=>'Users','action'=>'start'));
+    	}
+    }
 
     function index() {
+    	if ($this->__checkPermission('index')); //Check permission
+    	
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
 
         $users = $this->paginate('User');
@@ -26,6 +62,7 @@ class UsersController extends AppController {
     }
     
     function indexStudents() {
+    	if ($this->__checkPermission('index')); //Check permission
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
 
         $users = $this->paginate('User', array('User.type_id'=>'3'));
@@ -34,6 +71,7 @@ class UsersController extends AppController {
     }
     
     function indexInstructors() {
+    	if ($this->__checkPermission('index')); //Check permission
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
 
         $users = $this->paginate('User', array('User.type_id'=>'2'));
@@ -42,6 +80,7 @@ class UsersController extends AppController {
     }
     
     function indexAdministrators() {
+    	if ($this->__checkPermission('index')); //Check permission
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
 
         $users = $this->paginate('User', array('User.type_id'=>'1'));
@@ -50,6 +89,7 @@ class UsersController extends AppController {
     }
     
     function view($id = null) {
+    	if ($this->__checkPermission('view')); //Check permission
 	$this->User->id = $id;
 	$user = $this->User->read();
 	$this->set('user', $user);
@@ -57,6 +97,7 @@ class UsersController extends AppController {
     
     function edit($id = null) 
     {
+    	if ($this->__checkPermission('edit')); //Check permission
 	$this->User->id = $id;
 	$this->User->read();
 	$user = $this->User->data;
@@ -73,6 +114,7 @@ class UsersController extends AppController {
     }
     
     function delete($id = null) {
+    	if ($this->__checkPermission('delete')); //Check permission
 	$this->User->delete($id);
 	$this->Session->setFlash('User has been deleted');
 	$this->redirect(array('action'=>'index'));
@@ -80,6 +122,7 @@ class UsersController extends AppController {
     
     function add () 
     {
+    	if ($this->__checkPermission('add')); //Check permission
 	if (!empty($this->data)){
 		if ($this->User->save($this->data))
 		{

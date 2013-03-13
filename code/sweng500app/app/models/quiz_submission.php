@@ -14,14 +14,14 @@ class QuizSubmission extends AppModel {
 	var $recursive = 2;
 	var $name = 'QuizSubmission';
 	
-//	var $belongsTo = array('Quiz', 'User');
+	var $belongsTo = array('Quiz', 'User');
 	
-    var $hasMany = array('SubmittedAnswer' => 
-    	array('className' => 'SubmittedAnswer',
+	var $hasMany = array('SubmittedAnswer' => 
+	    array('className' => 'SubmittedAnswer',
     		'foreignKey' => 'quiz_submission_id',
     		'dependent' => true,
     		
-    	)
+    	    )
 	);
 
 }
