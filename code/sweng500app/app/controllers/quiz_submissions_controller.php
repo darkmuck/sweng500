@@ -11,24 +11,24 @@
 
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission', 'Quiz', 'SubmittedAnswer', 'QuizGrader');
+	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader');
 	
 	function take_quiz($quizId = null) {
 		$this->QuizSubmission->Quiz->Behaviors->attach('Containable'); //helps prevent retrieving the related data
 		$quiz = $this->QuizSubmission->Quiz->find('first', array('conditions' => array('id' => $quizId),'contain'=>array()));
+		
 		if (empty($quiz)) {
 			$this->Session->setFlash('Invalid Quiz');
 			$this->redirect(array('controller'=>'lessons','index'));
 		}
 		$this->QuizSubmission->Quiz->Lesson->Behaviors->attach('Containable'); //helps prevent retrieving related data
 		$lesson = $this->QuizSubmission->Quiz->Lesson->find('first', array('conditions'=>array('Lesson.id'=>$quiz['Quiz']['lesson_id']), 'contain'=>array()));
-		$this->QuizSubmission->Quiz->Question->Behaviors->attach('Containable'); //helps prevent retrieving the related answers, which are not needed here
-		$questions = $this->QuizSubmission->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId),'contain'=>array()));
+		$questions = $this->QuizSubmission->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId)));
 		$this->set(compact('quiz','questions','lesson'));
 		$this->set('userId',$this->Auth->user('id'));
 		
 		if (!empty($this->data)) {
-			if ($this->QuizSubmission->save($this->data)) {
+			if ($this->QuizSubmission->saveAll($this->data)) {
 			    $this->Session->setFlash('Your quiz has been submitted');
 			    $this->redirect(array('controller'=>'lessons','action'=>'view',$lesson['Lesson']['id']));
 			} else {
