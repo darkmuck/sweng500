@@ -16,12 +16,12 @@ class QuizSubmission extends AppModel {
 	
 	var $belongsTo = array('Quiz', 'User');
 	
-	var $hasMany = array('SubmittedAnswer' => 
+	/*var $hasMany = array('SubmittedAnswer' => 
 	    array('className' => 'SubmittedAnswer',
     		'foreignKey' => 'quiz_submission_id',
     		'dependent' => true,
     		
     	    )
-	);
+	);*/
 
 }
