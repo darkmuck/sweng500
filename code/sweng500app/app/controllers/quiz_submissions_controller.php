@@ -5,7 +5,7 @@
  * File: quizsubmission_controller.php
  * Description: 
  * Created: Mar 3, 2013
- * Modified: 20130312 19:47
+ * Modified: 20130313 20:12
  * Modified By: William DiStefano
 */
 
@@ -28,7 +28,7 @@ class QuizSubmissionsController extends AppController {
 		$this->set('userId',$this->Auth->user('id'));
 		
 		if (!empty($this->data)) {
-			if ($this->QuizSubmission->saveAll($this->data)) {
+			if ($this->QuizSubmission->saveAll($this->data['QuizSubmission'])) {
 			    $this->Session->setFlash('Your quiz has been submitted');
 			    $this->redirect(array('controller'=>'lessons','action'=>'view',$lesson['Lesson']['id']));
 			} else {
