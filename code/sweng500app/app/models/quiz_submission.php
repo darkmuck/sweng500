@@ -5,7 +5,7 @@
  * File: quizsubmission.php
  * Description: This model provides an abstraction layer for the quizsubmission database table
  * Created: 2013-02-08
- * Modified: 2013-02-08 14:00
+ * Modified: 2013-02-13 20:11
  * Modified By: William DiStefano
 */
 
@@ -15,13 +15,5 @@ class QuizSubmission extends AppModel {
 	var $name = 'QuizSubmission';
 	
 	var $belongsTo = array('Quiz', 'User');
-	
-	/*var $hasMany = array('SubmittedAnswer' => 
-	    array('className' => 'SubmittedAnswer',
-    		'foreignKey' => 'quiz_submission_id',
-    		'dependent' => true,
-    		
-    	    )
-	);*/
 
 }

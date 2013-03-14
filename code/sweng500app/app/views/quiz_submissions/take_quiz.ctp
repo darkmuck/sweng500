@@ -35,7 +35,7 @@
     	                    if ($question['Question']['type'] == '4') {
     	                    	$options = array();
     	                    	foreach ($question['Answer'] as $answer) {
-    	                    	    array_push($options, $answer['value']);	
+    	                    	    $options[$answer['id']] = $answer['value'];	
     	                    	}
     	                    	echo $this->Form->input('QuizSubmission.'. $count .'.answer', array('options'=>$options,'label'=>false,'empty'=>true));
     	                    } else {
