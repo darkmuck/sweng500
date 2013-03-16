@@ -211,12 +211,11 @@
 </div>
 
 <div>
-	<?php echo $this->Form->create('Quiz', array('url'=>'/quizzes/edit')); ?>
+	<?php echo $this->Form->create('Quiz', array('url'=> '/quizzes/add')); ?>
     <h2>Quiz for <?php echo $this->data['Lesson']['name'] ?></h2>
     
     <?php
     	  echo $this->Form->hidden('Lesson.name', array('value' => $this->data['Quiz']['lesson_id']));
-    	  echo $this->Form->hidden('Quiz.id', array('type' => 'hidden', 'value' => $this->data['Quiz']['id']));
      	  echo $this->Form->hidden('Quiz.lesson_id', array('value' => $this->data['Quiz']['lesson_id'])); 
      	  echo $this->Form->hidden('Quiz.course_id', array('value' => $this->data['Quiz']['course_id'])); 
      	  echo $this->Form->input('Quiz.name', array('label' => 'Quiz Name:', 'maxlength' => 50, 'size' => 10)); ?>
@@ -232,19 +231,16 @@
 	 	foreach($this->data['Question'] as $question) {
  	?>
 	 	<div id="Question<?php echo $i ?>">
-	 	
-	 	<div id="Question<?php echo $i ?>">
 	 	<table>
 		<tr>
 			<td>
 	<?php
-			echo $this->Form->input('Question.'.$i.'.id', array('type' => 'hidden'));
 			echo $this->Form->input('Question.'.$i.'.type', array('label'=> 'Question Type', 
 				'onchange' => 'buildOptions(this, '.$i.')'));
 	?>
 			</td>
 			<td>
-	<?php
+	<?php 
 			echo $this->Form->input('Question.'.$i.'.points', array('type' => 'text', 'label' => 'Points:'));
 	?>
 			</td>
@@ -263,8 +259,6 @@
 		<!-- 0 = fill in the blank, 1 = multiple choice-->
 		<?php
 			if($this->data['Question'][$i]['type'] == 0) {
-				echo $this->Form->input('Question.'.$i.'.Answer.0.id', array('type'=> 'hidden'));
-				echo $this->Form->input('Question.'.$i.'.Answer.0.quiz_id', array('type'=> 'hidden'));
 				echo $this->Form->input('Question.'.$i.'.Answer.0.correct', array('type' => 'hidden'));
 				echo $this->Form->input('Question.'.$i.'.Answer.0.value', array('type' => 'text', 'label' => 'Answer:'));
 				
@@ -276,7 +270,7 @@
 			<table id="Question<?php echo $i; ?>AnswersChoices">
 				<thead>
 					<tr>
-						<th>Answer</th><th align="center">Correct?</th><th></th>
+						<th>Choice</th><th align="center">Correct?</th><th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -284,8 +278,6 @@
 					$k = 0;
 					foreach ($this->data['Question'][$i]['Answer'] as $answer) {
 						echo '<tr><td>';
-						echo $this->Form->input('Question.'.$i.'.Answer.'.$k.'.id', array('type'=> 'hidden'));
-						echo $this->Form->input('Question.'.$i.'.Answer.'.$k.'.question_id', array('type'=> 'hidden'));
 						echo $this->Form->input('Question.'.$i.'.Answer.'.$k.'.value', array('label' => false));
 						echo '</td><td align="center">';
 						echo $this->Form->input('Question.'.$i.'.Answer.'.$k.'.correct', 
@@ -309,7 +301,7 @@
 		</tr>
 		<tr>
 			<td>
-				<?php echo $this->Form->button('Remove Question', array('onclick' => 'removeQuestion('.$i.')')); ?>
+			<?php echo $this->Form->button('Remove Question', array('onclick' => 'removeQuestion('.$i.')')); ?>
 			</td>
 		</tr>
 		</table>
