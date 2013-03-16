@@ -70,26 +70,7 @@ class QuizzesController extends AppController {
 		
 	}
 	
-	function editAnswers($questionId = null) {
-		$question = $this->Quiz->Question->find('first', array('conditions' => array('id' => $questionId)));
-		if (empty($question)) {
-			$this->Session->setFlash('Invalid Question');
-			$this->redirect(array('controller'=>'lessons','index'));
-		}
-
-		if (!empty($this->data)) {
-		    if ($this->Quiz->Question->Answer->saveAll($this->data['Answer'])) {
-			$this->Session->setFlash('The answers have been saved.');
-			$this->redirect(array('controller'=>'quizzes','action'=>'editAnswers', $questionId));
-		    } else {
-			$this->Session->setFlash('Unable to save answers');
-			$this->redirect(array('controller'=>'lessons','action'=>'index'));
-		    }
-		}
-			
-		$answers = $this->Quiz->Question->Answer->find('all', array('conditions' => array('Answer.question_id' => $questionId)));
-		$this->set(compact('question','answers'));
-	}
+	
 	
 	function delete($id = null, $lessonId = null) {
 		if(!empty($id) && !empty($lessonId)) {
