@@ -16,55 +16,57 @@ class QuizzesController extends AppController {
 	function index() {}
 	
 	function add($lessonId = null, $courseId = null) {
-		if(!empty($lessonId) && !empty($courseId)) {
-			$this->data['Quiz']['lesson_id'] = $lessonId;
-			$this->data['Quiz']['course_id'] = $courseId;
-			
+
+		if(!empty($this->data)) {
 			$this->Quiz->save($this->data);
 			$quizId = $this->Quiz->getLastInsertId();
-			$this->redirect(array('controller'=>'quizzes','action'=>'edit', $quizId));
-		} else {
-			$this->Session->setFlash('Error, invalid course or lesson');
-			$this->redirect(array('controller'=>'lessons','action'=>'index'));
+			foreach($this->data['Question'] as $question) {
+				$question['quiz_id'] = $quizId;
+				$this->Question->saveAll($question);
+			}
+			$this->Session->setFlash('Successfully added quiz');
+			$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
+				$this->data['Quiz']['lesson_id']));
 		}
-	}
-	
-	function addQuestion() {
-		if(!empty($this->data)) {
-			$this->Quiz->Question->save($this->data);
-			$last = $this->Quiz->Question->getLastInsertId();
-			$question = $this->Quiz->Question->find('first', array('id'=>$last));
-			$this->redirect(array('controller'=>'Quizzes','action'=>'edit', $question['Question']['quiz_id']));
-		} else {
-			$this->Session->setFlash('Error, unable to add question');
-			$this->redirect(array('controller'=>'lessons','action'=>'index'));
+
+		if(!empty($lessonId)) {
+			$lesson = $this->Lesson->findById($lessonId);
+			$this->data['Quiz']['lesson_id'] = $lesson['Lesson']['id'];
+			$this->data['Quiz']['course_id'] = $lesson['Lesson']['course_id'];
+			$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
+			$this->set('lesson', $lesson);
 		}
-	}
-	
-	function addAnswer() {
-		if(!empty($this->data)) {
-			$this->Quiz->Question->Answer->save($this->data);
-			$last = $this->Quiz->Question->Answer->getLastInsertId();
-			$answer = $this->Quiz->Question->Answer->find('first', array('id'=>$last));
-			$this->redirect(array('controller'=>'Quizzes','action'=>'editAnswers', $answer['Answer']['question_id']));
-		} else {
-			$this->Session->setFlash('Error, unable to add answer');
-			$this->redirect(array('controller'=>'lessons','action'=>'index'));
-		}
+		$this->set('types', array('Fill in the blank', 'Multiple choice'));
+
 	}
 	
 	function edit($quizId = null) {
-		$this->Quiz->Behaviors->attach('Containable'); //helps prevent retrieving the related questions, which will be retrieved separately
-		$quiz = $this->Quiz->find('first', array('conditions' => array('id' => $quizId),'contain'=>array()));
-		if (empty($quiz)) {
-			$this->Session->setFlash('Invalid Quiz');
-			$this->redirect(array('controller'=>'lessons','index'));
+		if(!empty($this->data)) {
+			$this->Quiz->save($this->data);
+			$quizId = $this->data['Quiz']['id'];
+			$this->Question->deleteAll(array('Question.quiz_id' => $quizId), true);
+			foreach($this->data['Question'] as $question) {
+				if(empty($question['quiz_id'])) {
+					$question['quiz_id'] = $quizId;	
+				}
+				for($i = 0; $i < sizeof($question['Answer']); $i++) {
+					if(empty($question['Answer'][$i]['correct'])) {
+						$question['Answer'][$i]['correct'] = false;
+					}
+				}
+				$this->Question->saveAll($question);
+			}
+			$this->Session->setFlash('Successfully edited quiz');
+			$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
+				$this->data['Quiz']['lesson_id']));
+		} else {
+			$quiz = $this->Quiz->findById($quizId);
+			$this->data['Quiz'] = $quiz['Quiz'];
+			$this->data['Question'] = $quiz['Question'];
+			$this->data['Lesson']['name'] = $quiz['Lesson']['name'];
+			$this->set('types', array('Fill in the blank', 'Multiple choice'));
 		}
-		$this->Quiz->Lesson->Behaviors->attach('Containable'); //helps prevent retrieving related data
-		$lesson = $this->Quiz->Lesson->find('first', array('conditions'=>array('Lesson.id'=>$quiz['Quiz']['lesson_id']), 'contain'=>array()));
-		$this->Quiz->Question->Behaviors->attach('Containable'); //helps prevent retrieving the related answers, which are not needed here
-		$questions = $this->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId),'contain'=>array()));
-		$this->set(compact('quiz','questions','lesson'));
+		
 		
 	}
 	
@@ -91,32 +93,14 @@ class QuizzesController extends AppController {
 	
 	function delete($id = null, $lessonId = null) {
 		if(!empty($id) && !empty($lessonId)) {
-			$this->Quiz->Question->delete($id);
+			$this->Quiz->delete($id);
 			$this->Session->setFlash('The quiz has been deleted');
 			$this->redirect(array('controller'=>'lessons','action'=>'edit', $lessonId));
+		} else {
+			$this->Session->setFlash('Invalid Quiz');
+			$this->redirect(array('controller'=>'lessons','action'=>'index'));
 		}
-		$this->Session->setFlash('Invalid Quiz');
-		$this->redirect(array('controller'=>'lessons','action'=>'index'));
-	}
-	
-	function deleteQuestion($id = null, $quizId = null) {
-		if(!empty($id) && !empty($quizId)) {
-			$this->Quiz->Question->delete($id);
-			$this->Session->setFlash('The question has been deleted');
-			$this->redirect(array('controller'=>'quizzes','action'=>'edit', $quizId));
-		}
-		$this->Session->setFlash('Invalid Question');
-		$this->redirect(array('controller'=>'lessons','action'=>'index'));
-	}
-	
-	function deleteAnswer($id = null, $questionId = null) {
-		if(!empty($id) && !empty($questionId)) {
-			$this->Quiz->Question->Answer->delete($id);
-			$this->Session->setFlash('The answer has been deleted');
-			$this->redirect(array('controller'=>'quizzes','action'=>'editAnswers', $questionId));
-		}
-		$this->Session->setFlash('Invalid Answer');
-		$this->redirect(array('controller'=>'lessons','action'=>'index'));
+		
 	}
 	
 	function take($quizId = null) {
