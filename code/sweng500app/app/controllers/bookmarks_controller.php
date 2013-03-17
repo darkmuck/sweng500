@@ -35,7 +35,8 @@ public function index($id=null) {
 function view($id = null) {
           $this->Bookmark->Lesson->id = $id;
           $lesson = $this->Bookmark->Lesson->read();
-          $this->set('bookmark_lesson', $lesson);
+          $this->redirect(array('controller' => 'Lessons', 'action'=>'view', $lesson['Lesson']['id']));
+
     }
 
 function delete($id) {

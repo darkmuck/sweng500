@@ -15,7 +15,9 @@
 .padded td { padding: 10px; }
 </style></head>
 <div>
+<?php if(empty($lesson['Bookmark'])): ?>
 <p class="right"><?php echo $this->Html->link('Bookmark This Lesson', array('controller' => 'bookmarks', 'action'=> 'add', $lesson['Lesson']['id'])); ?></p>
+<?php endif; ?>
 <div>
     <h2><?php echo $lesson['Lesson']['name'];?> </h2>
     <hr />
