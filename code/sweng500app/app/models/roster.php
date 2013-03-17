@@ -45,7 +45,7 @@ function isEligible($data, $fields ) {
     
                             if($key == 'course_id') {   
                                        
-                                      $prereq = $this->Course->find('first', array(
+                                      $prereq = $this->Course->find('count', array(
                                                      
 			'fields' => array('Course.course_id'),  
                                                      
@@ -55,7 +55,7 @@ function isEligible($data, $fields ) {
                                  );   
                             }
 	        
-	         if ($prereq) {
+	         if ($prereq>0) {
 
                                    if( $key == 'user_id') { 
                                    

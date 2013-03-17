@@ -12,7 +12,6 @@
 <head><style>
 .bold{ font-weight:bold;}
 .color { color: #6699CC;}
-.bg {background: #ffCC33;}
 .right{ float:right;}
 </style></head>
 
@@ -41,7 +40,7 @@
     </tr>
     <?php  endforeach; ?>
     <tr><td><br/></td><td><br/></td><td><br/></td></tr>
-    <tr class="bg"><td class="bold">Course Status</td>
+    <tr><td class="bold">Course Status</td>
     <td class="bold"><?php echo $roster_course['Roster']['completion_status']; ?></td><td></td>
 </table>
 

@@ -16,13 +16,13 @@ var $name = 'LessonStatuses';
 
 
 function add($id = null) {
-	$record = $this->LessonStatus->find('first', array(
+	$record = $this->LessonStatus->find('count', array(
                                      'fields' => 'id',
                              	'conditions' => array('LessonStatus.user_id' => $this->Auth->user('id'), 
                                                                         'LessonStatus.lesson_id' => $id)
                   ));
 
-            if(!$record) {
+            if($record<1) {
                    $this->LessonStatus->create();
                    $this->LessonStatus->set(array(
                             'lesson_id' => $id,                   
@@ -34,8 +34,9 @@ function add($id = null) {
                         }
              }
             else{
-                        $errors = $this->LessonStatus->invalidFields();
-                        $this->Session->setFlash(implode(',', $errors));
+                     /*   $errors = $this->LessonStatus->invalidFields();
+                        $this->Session->setFlash(implode(',', $errors));*/
+                        $this->Session->setFlash('Lesson already completed!');
             }
 	$this->redirect($this->referer());
 
