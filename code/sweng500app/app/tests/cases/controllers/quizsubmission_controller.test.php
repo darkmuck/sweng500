@@ -30,7 +30,100 @@ class TestQuizSubmissionsController extends QuizSubmissionsController {
 }
 
 class QuizSubmissionsControllerTest extends CakeTestCase {
-	var $debugQuizSubmission = array('id' => -1, 'quizId' => -1);
+	
+	var $testLesson = array('Lesson' => array(
+		'id' => -1,
+		'course_id' => -1,
+		'name' => 'test',
+		'main_content' => 'test',
+		'lesson_order' => -1
+	));
+	
+	var $testQuiz = array(
+		'Quiz' => array(
+			'id' => -1,
+			'lesson_id' => -1
+		),
+		'Question' => array(
+			array(
+				'id' => -1,
+				'quiz_id' => -1,
+				'type' => 0,
+				'points' => 10,
+				'question' => 'Please type in \'Two\' to answer the question.',
+				'Answer' => 
+					array(
+						array(
+							'id' => -1,
+							'question_id' => -1,
+							'value' => 'Two',
+							'correct' => true
+						)
+					)
+			),
+			array(
+				'id' => -2,
+				'quiz_id' => -1,
+				'type' => 1,
+				'points' => 15,
+				'question' => 'Is this a multiple choice question?',
+				'Answer' =>
+					array(
+						array(
+							'id' => -2,
+							'question_id' => -2,
+							'value' => 'Yes',
+							'correct' => true
+						),
+						array(
+							'id' => -3,
+							'question_id' => -2,
+							'value' => 'No',
+							'correct' => false
+						)
+					)
+			),
+			array(
+				'id' => -3,
+				'quiz_id' => -1,
+				'type' => 0,
+				'points' => 10,
+				'question' => 'Is this a fill in the blank?',
+				'Answer' =>
+					array(
+						array(
+							'id' => -4,
+							'question_id' => -3,
+							'value' => 'Yes',
+							'correct' => true
+						)
+					)
+			)
+		)
+	);
+	var $testQuizSubmission = array(
+		'QuizSubmission' => array(
+				array(
+				'id' => -1,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -1,
+				'answer' => 'ttwo'),
+				array(
+				'id' => -2,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -2,
+				'answer' => -2),
+				array(
+				'id' => -3,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -3,
+				'answer' => 'Yes')
+			)
+		
+	);
 	
 	function startTest() {
 		$this->TestQuizSubmissionsController = new TestQuizSubmissionsController();
@@ -44,17 +137,25 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 		ClassRegistry::flush();
 	}
 	
-	function testSubmit() {
-		$this->TestQuizSubmissionsController->data = $this->debugQuizSubmission;
+	function testTake_Quiz() {
+		$this->TestQuizSubmissionsController->Lesson->save($this->testLesson);
+		$this->TestQuizSubmissionsController->Quiz->save($this->testQuiz);
+		foreach($this->testQuiz['Question'] as $question) {
+			$this->TestQuizSubmissionsController->Quiz->Question->saveAll($question);
+		}
 		
-		$this->TestQuizSubmissionsController->params = Router::parse('/QuizSubmissions/submit');
-		$this->TestQuizSubmissionsController->params['url']['url'] ='/QuizSubmissions/submit';
+		$this->TestQuizSubmissionsController->QuizSubmission->Behaviors->attach('Containable');
+		$this->TestQuizSubmissionsController->data = $this->testQuizSubmission;
+		$this->TestQuizSubmissionsController->params = Router::parse('/QuizSubmissions/results');
+		$this->TestQuizSubmissionsController->params['url']['url'] ='/QuizSubmissions/results';
 		$this->TestQuizSubmissionsController->beforeFilter();
 		
-		$this->TestQuizSubmissionsController->submit();
+		$this->TestQuizSubmissionsController->take_quiz(-1);
 		
-		$this->assertEqual($this->TestQuizSubmissionsController->redirectUrl, array(
-			'action'=> 'results', $this->debugQuizSubmission['id']));
+		$this->assertNotNull($this->TestQuizSubmissionsController->QuizSubmission->find('all', 
+			array('conditions' => array('QuizSubmission.quiz_id' => $this->testQuiz['Quiz']['id']))));
+			
+
 	}
 	
 	function testResults(){ 
@@ -62,10 +163,16 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 		$this->TestQuizSubmissionsController->params['url']['url'] ='/QuizSubmissions/results';
 		$this->TestQuizSubmissionsController->beforeFilter();
 		
-		$this->TestQuizSubmissionsController->results($this->debugQuizSubmission['id']);
+		$this->TestQuizSubmissionsController->results(10,1);
+		$this->assertNotNull($this->TestQuizSubmissionsController->viewVars['results']);
 		
-		$this->assertEqual($this->TestQuizSubmissionsController->redirectUrl, array(
-			'action'=> 'results', $this->debugQuizSubmission['id']));
+		//cleanup
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-1);
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-2);
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-3);
+		$this->TestQuizSubmissionsController->Quiz->delete($this->testQuiz['Quiz']['id']);
+		$this->TestQuizSubmissionsController->Lesson->delete($this->testLesson['Lesson']['id']);
+		
 	} 
 }
 ?>

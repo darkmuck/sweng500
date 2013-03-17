@@ -23,7 +23,7 @@ class QuizGraderTestCase extends CakeTestCase
 		'Question' => array(
 			array(
 				'id' => 1,
-				'type' => 2,
+				'type' => 0,
 				'points' => 10,
 				'question' => 'Please type in \'Two\' to answer the question.',
 				'Answer' => 
@@ -56,46 +56,67 @@ class QuizGraderTestCase extends CakeTestCase
 							'correct' => false
 						)
 					)
+			),
+			array(
+				'id' => 3,
+				'type' => 0,
+				'points' => 10,
+				'question' => 'Is this a fill in the blank?',
+				'Answer' =>
+					array(
+						array(
+							'id' => 4,
+							'question_id' => 3,
+							'value' => 'Yes',
+							'correct' => true
+						)
+					)
 			)
 		)
 	);
 	var $testQuizSubmission = array(
-		'QuizSubmission' => array(
-			'id' => 1,
-			'quiz_id' => 1,
-			'user_id' => 1
-		),
-		'SubmittedAnswer' => array(
-			array(
+			array( 'QuizSubmission' =>
+				array(
 				'id' => 1,
-				'quiz_submission_id' => 1,
+				'quiz_id' => 1,
+				'user_id' => 1,
 				'question_id' => 1,
-				'answer' => 'ttwo'
+				'answer' => 'ttwo')
 			),
-			array(
+			array('QuizSubmission' =>
+				array(
 				'id' => 2,
-				'quiz_submission_id' => 1,
+				'quiz_id' => 1,
+				'user_id' => 1,
 				'question_id' => 2,
-				'answer' => 'Yes'
+				'answer' => 2)
+			),
+			array('QuizSubmission' =>
+				array(
+				'id' => 3,
+				'quiz_id' => 1,
+				'user_id' => 1,
+				'question_id' => 3,
+				'answer' => 'Yes')
 			)
-		)
+		
 	);
 	
 	
 	
 	function testGrade() {
 		$this->result = new Results();
-		$this->result->totalPoints = 25;
-		$this->result->addPoints(15);
+		$this->result->totalPoints = 35;
 		$this->result->addIncorrectAnswer(1);
-		$this->result->addCorrectAnswer(2);
+		$this->result->addCorrectAnswer(2, 15);
+		$this->result->addCorrectAnswer(3, 10);
 		
 		
 		$this->QuizGrader =& ClassRegistry::init('QuizGrader');
 
 		$result = $this->QuizGrader->grade($this->testQuiz, $this->testQuizSubmission);
 		
-		$this->assertEqual($this->result, $result);
+		$this->assertEqual($result, $this->result);
 	}
 }
 ?>

@@ -11,26 +11,26 @@
 
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader');
+	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson');
 	
 	function take_quiz($quizId = null) {
-		$this->QuizSubmission->Quiz->Behaviors->attach('Containable'); //helps prevent retrieving the related data
-		$quiz = $this->QuizSubmission->Quiz->find('first', array('conditions' => array('id' => $quizId),'contain'=>array()));
+		$this->Quiz->Behaviors->attach('Containable'); //helps prevent retrieving the related data
+		$quiz = $this->Quiz->find('first', array('conditions' => array('id' => $quizId),'contain'=> false));
 		
 		if (empty($quiz)) {
 			$this->Session->setFlash('Invalid Quiz');
 			$this->redirect(array('controller'=>'lessons','index'));
 		}
-		$this->QuizSubmission->Quiz->Lesson->Behaviors->attach('Containable'); //helps prevent retrieving related data
-		$lesson = $this->QuizSubmission->Quiz->Lesson->find('first', array('conditions'=>array('Lesson.id'=>$quiz['Quiz']['lesson_id']), 'contain'=>array()));
-		$questions = $this->QuizSubmission->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId)));
+		$this->Lesson->Behaviors->attach('Containable'); //helps prevent retrieving related data
+		$lesson = $this->Lesson->find('first', array('conditions'=>array('Lesson.id'=>$quiz['Quiz']['lesson_id']), 'contain'=>array()));
+		$questions = $this->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId)));
 		$this->set(compact('quiz','questions','lesson'));
 		$this->set('userId',$this->Auth->user('id'));
 		
 		if (!empty($this->data)) {
 			if ($this->QuizSubmission->saveAll($this->data['QuizSubmission'])) {
 			    $this->Session->setFlash('Your quiz has been submitted');
-			    $this->redirect(array('controller'=>'lessons','action'=>'view',$lesson['Lesson']['id']));
+			    $this->redirect(array('action'=>'results',$quiz['Quiz']['id'], $this->Auth->user('id')));
 			} else {
 			    $this->Session->setFlash('Error, unable to save quiz response');
 			    $this->render();
@@ -38,18 +38,35 @@ class QuizSubmissionsController extends AppController {
 		}
 	}
 	
-	function results($quizSubmissionId = null) {
-		$quizsub = $this->QuizSubmission->find('first', 
-			array('conditions'=> array('QuizSubmission.id' => 1),
-		 		'recursive' => 2)
- 		);
- 		
- 		$quiz = $this->Quiz->findById($quizsub['QuizSubmission']['quiz_id']);
- 		
- 		debug($this->QuizGrader->grade($quiz, $quizsub));
-		
+	function results($quizId = null, $userId = null) {
+		if(!empty($quizId) && !empty($userId)) {
+			$quizsub = $this->QuizSubmission->find('all', 
+				array('conditions'=> array('QuizSubmission.quiz_id' => $quizId, 
+					'QuizSubmission.user_id' => $userId),
+					'contain' => false)
+	 		);
+	 		
+	 		$quiz = $this->Quiz->find('first', array('conditions' => array('Quiz.id' => $quizId), 
+				'contain' => false));
+	 		
+	 		$quizResult = $this->QuizGrader->grade($quiz, $quizsub);
+			
+			foreach($quizsub as $quizSubmission) {
+				foreach($quizResult->answerRubric as $key => $correct) {
+					if($quizSubmission['QuizSubmission']['question_id'] == $key) {
+						$quizSubmission['QuizSubmission']['points'] = 
+							$quizResult->points[$quizSubmission['QuizSubmission']['question_id']];
+						$this->QuizSubmission->save($quizSubmission);
+					}
+				}
+			}
 
-		die(debug($quizsub));
+			$this->set('quizSubmission', $quizsub);
+			$this->set('quiz', $quiz);
+			$this->set('results', $quizResult);
+		} else {
+			//error case
+		}
 	}
 	
 
