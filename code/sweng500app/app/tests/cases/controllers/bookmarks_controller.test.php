@@ -52,7 +52,7 @@ class BookmarkControllerTest extends CakeTestCase {
 	}
 	
 	function testIndex() {
-                                     $id=2;
+        $id=2;
 		$this->TestBookmarkController->params = Router::parse('/Bookmarks');
 		$this->TestBookmarkController->params['url']['url'] ='/Bookmarks';
 		$this->TestBookmarkController->beforeFilter();
@@ -67,31 +67,34 @@ class BookmarkControllerTest extends CakeTestCase {
 		$this->TestBookmarkController->params = Router::parse('/Bookmarks/view');
 		$this->TestBookmarkController->beforeFilter();
 		$this->TestBookmarkController->view($id);
-		$this->assertEqual($this->TestBookmarkController->viewVars['bookmark_lesson']['Lesson']['id'], 
-			$this->debugBookmark['lesson_id']);
+		$this->assertEqual(array('controller' => 'Lessons', 'action' => 'view', 
+				$this->debugBookmark['lesson_id']), $this->TestBookmarkController->redirectUrl);
 	}
+	
+	function testAdd() {
+		$id=2;
+		$this->TestBookmarkController->Session->write('Auth.User', array('id' => 1));
+		$this->TestBookmarkController->params = Router::parse('/Bookmarks/add');
+		$this->TestBookmarkController->beforeFilter();
+		$this->TestBookmarkController->add($id);
+		$this->addedId = $this->TestBookmarkController->Bookmark->getLastInsertId();
+		$count=$this->TestBookmarkController->Bookmark->find('count', array(
+             'conditions' => array('Bookmark.lesson_id' => $id,
+             'Bookmark.user_id' =>1))); 
+		$this->assertTrue($count>0);
+	}	
 	
 	function testDelete() {
 		$id = 5;
 		$this->TestBookmarkController->params = Router::parse('/Bookmarks/delete');
 		$this->TestBookmarkController->beforeFilter();
 
-		$this->TestBookmarkController->delete($id);
-		$this->TestBookmarkController->Bookmark->id = $id;
+		$this->TestBookmarkController->delete($this->addedId);
+		$this->TestBookmarkController->Bookmark->id = $this->addedId;
 		$this->assertFalse($this->TestBookmarkController->Bookmark->read());
 	}
 
-	function testAdd() {
-		$id=1;
-		$this->TestBookmarkController->Session->write('Auth.User', array('id' => 2));
-		$this->TestBookmarkController->params = Router::parse('/Bookmarks/add');
-		$this->TestBookmarkController->beforeFilter();
-		$this->TestBookmarkController->add($id);
-		$count=$this->TestBookmarkController->Bookmark->find('count', array(
-                                                                 'conditions' => array('Bookmark.lesson_id' => $id,
-                                                                                                      'Bookmark.user_id' =>2))); 
-		$this->assertTrue($count>0);
-	}	
+	
 	
 	
 }

@@ -19,11 +19,11 @@ public function index($id=null) {
 
        $this->Bookmark->Lesson->paginate =  array('conditions' => array(
 			'Bookmark.user_id' => $this->Auth->user('id'),
-                                 		'Lesson.course_id' => $id,
-                                      	'Bookmark.bookmark_type' => 'user',
-            	 'Lesson' => array(
-             	 'limit' => 10, null, 
-            	 'order' => array('Lesson.lesson_order' => 'desc')),
+     		'Lesson.course_id' => $id,
+          	'Bookmark.bookmark_type' => 'user',
+        	'Lesson' => array(
+         	'limit' => 10, null, 
+        	'order' => array('Lesson.lesson_order' => 'desc')),
        ));
 
           $bookmark = $this->paginate('Bookmark');
