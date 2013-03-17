@@ -4,7 +4,7 @@
 -- File: UsersController.php
 -- Description: This controller provides request handling for users data
 -- Created: 2013-02-08
--- Modified: 2013-02-24 18:15
+-- Modified: 2013-02-08 15:08
 -- Modified By: William DiStefano
 
 CREATE TABLE types (
@@ -83,13 +83,11 @@ CREATE TABLE courses (
     id INTEGER(8) NOT NULL AUTO_INCREMENT,
     course_number VARCHAR(6) NOT NULL,
     course_name VARCHAR(50) NOT NULL,
-    course_id INTEGER DEFAULT NULL,
+    prerequisite VARCHAR(6),
     lesson_completion INTEGER (8) NOT NULL,
     quiz_passing_score INTEGER (8) NOT NULL,
+    instructor VARCHAR(50) NOT NULL,
     course_status VARCHAR(1) NOT NULL,
-    user_id INTEGER DEFAULT NULL,
-    FOREIGN KEY (course_id) REFERENCES courses(id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
     PRIMARY KEY (id)
 );
 

@@ -5,8 +5,8 @@
  * File: courses_controller.test.php
  * Description: This file tests the courses controller
  * Created: 2013-02-23
- * Modified: 2013-02-24 18:50
- * Modified By: William DiStefano
+ * Modified: 2013-02-23 18:21
+ * Modified By: David Singer
 */
 
 /*This class is to override some of the functionality that breaks testing of controllers
@@ -37,11 +37,12 @@ class CourseControllerTest extends CakeTestCase {
 	public $debugCourse = array('id' => 10,
 		'course_number' => 'testc1', 
 		'course_name' => 'testcourse1',
-		'course_id' => 1,
 		'lesson_completion' => 100,
 		'quiz_passing_score' => 100,
-		'user_id' => 1,
-		'course_status' => 'C');
+		'instructor' => 'testinstructor1',
+		'course_status' => 'C',
+                                     'course_id' => NULL,
+                                     'user_id' => 1);
 
 	function startTest() {
 		$this->TestCourseController = new TestCourseController();
@@ -59,49 +60,49 @@ class CourseControllerTest extends CakeTestCase {
 		$this->TestCourseController->params = Router::parse('/Courses');
 		$this->TestCourseController->params['url']['url'] ='/Courses';
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->index();
 		$count = count($this->TestCourseController->viewVars['courses']);
 		$this->assertTrue( $count >= 0);
 	}
-	
+
 	function testIndexCurrent() {
 		$this->TestCourseController->params = Router::parse('/Courses/indexCurrent');
 		$this->TestCourseController->params['url']['url'] ='/Courses/indexCurrent';
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->indexCurrent();
 		$count = count($this->TestCourseController->viewVars['courses']);
 		$this->assertTrue( $count >= 0);
 	}
-	
+
 	function testIndexArchived() {
 		$this->TestCourseController->params = Router::parse('/indexArchived');
 		$this->TestCourseController->params['url']['url'] ='/Courses/indexArchived';
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->indexArchived();
 		$count = count($this->TestCourseController->viewVars['courses']);
 		$this->assertTrue( $count >= 0);
 	}
-	
+
 	function testUnderDevelopment() {
-		
+
 		$this->TestCourseController->params = Router::parse('/Courses/indexUnderDevelopment');
 		$this->TestCourseController->params['url']['url'] ='/Courses/indexUnderDevelopment';
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->indexUnderDevelopment();
 		$count = count($this->TestCourseController->viewVars['courses']);
-		$this->assertTrue( $count >= 0);
+		$this->assertTrue( $count >= 1);
 	}	
-	
+
 	function testAdd() {
 		$this->TestCourseController->data = array('Course' => $this->debugCourse);
-		
+
 		$this->TestCourseController->params = Router::parse('/Courses/add');
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->add();
 
 		$this->assertNotEqual($this->TestCourseController->redirectUrl, array('action'=> 'index'));
@@ -111,38 +112,61 @@ class CourseControllerTest extends CakeTestCase {
 		$id = 10;
 		$this->TestCourseController->params = Router::parse('/Courses/view');
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->view($id);
 		$this->assertEqual($this->TestCourseController->viewVars['course']['Course']['course_number'], 
 			$this->debugCourse['course_number']);
 	}
-	
+
 	function testEdit() {
-		
+
 		$this->debugCourse['course_name'] = 'TestEditCourse';
 		$this->TestCourseController->data = array('Course' => $this->debugCourse);
-		
+
 		$this->TestCourseController->params = Router::parse('/Courses/edit');
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->edit();
-		
+
 		$this->TestCourseController->Course->id = 10;
 		$course = $this->TestCourseController->Course->read();
-		
+
 		$this->assertEqual($course['Course']['course_name'], $this->debugCourse['course_name']);
 	}
-	
+
 	function testDelete() {
 		$id = 10;
 		$this->TestCourseController->params = Router::parse('/Courses/delete');
 		$this->TestCourseController->beforeFilter();
-		
+
 		$this->TestCourseController->delete($id);
 		$this->TestCourseController->Course->id = $id;
 		$this->assertFalse($this->TestCourseController->Course->read());
 	}
-	
+
+	function testEnroll() {
+                                     $id = 3;
+                                     $this->TestCourseController->Session->write('Auth.User', array('id' => 2));
+		$this->TestCourseController->params = Router::parse('/Courses/enroll');
+		$this->TestCourseController->beforeFilter();
+		$this->TestCourseController->enroll($id);   
+                                     $added=$this->TestCourseController->Course->Roster->find('count', array(
+                                                                 'conditions' => array('Roster.course_id' => $id))); 
+		$this->assertTrue($added>0);
+	}
+
+	function testSearchResults() { 
+		
+  		$this->TestCourseController->data = NULL;
+ 		$this->TestCourseController->params = Router::parse('/Courses/searchResults');
+		$this->TestCourseController->beforeFilter();
+		$this->TestCourseController->searchResults(); 
+		$count = count($this->TestCourseController->viewVars['courses']);
+		$this->assertTrue($count >= 0);
+
+
+	}
+
 }	
-	
+
 ?>

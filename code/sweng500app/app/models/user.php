@@ -19,7 +19,9 @@ class User extends AppModel {
     	'Course' => array(
     		'className' => 'Course'),
                    'Roster' => array(
-                                     'className' => 'Roster')
+                                     'className' => 'Roster'),
+                   'Bookmark' => array(
+                                     'className' => 'Bookmark')
     );
 
     var $hasAndBelongsToMany = array(

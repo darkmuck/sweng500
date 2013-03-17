@@ -13,7 +13,7 @@ class Course extends AppModel {
 
     var $name = 'Course';
     var $hasMany = array(
-        'Roster'
+        'Roster','Lesson'
     );	
     var $belongsTo = array(
     	'User' => array(

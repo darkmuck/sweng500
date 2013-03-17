@@ -39,7 +39,7 @@
         <td><?php echo $roster['Roster']['completion_status']; ?></td> 
         <td>
             <?php 
-            echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$roster['Course']['id']))."'", 'class'=>'btn btn-info'));
+            echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'courses', 'action'=>'view',$roster['Course']['id']))."'", 'class'=>'btn btn-info'));
             echo $this->Form->button('Delete', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'delete',$roster['Roster']['id']))."'", 'class'=>'btn btn-danger'));
             ?>
         </td>

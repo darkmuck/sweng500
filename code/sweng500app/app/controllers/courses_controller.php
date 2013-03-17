@@ -12,6 +12,7 @@
 class CoursesController extends AppController {
 
     var $name = 'Courses';
+var $uses =array('Course','Lesson');
 	
 	 function index() {
         $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
@@ -99,10 +100,17 @@ class CoursesController extends AppController {
                             'course_id' => $id,                   
                             'user_id' => $this->Auth->user('id')
                    ));
-                  $this->Course->Roster->save($this->data);
-                  $this->Session->setFlash('Course has been added to your Course Roster');
-                  $this->redirect(array('action'=>'./index'));
-
+                  if ($this->Course->Roster->validates()) {
+                       $this->Course->Roster->save($this->data);
+                       $this->Session->setFlash('Course has been added to your Course Roster');
+                  }
+                  else  {
+                        $errors = $this->Course->Roster->invalidFields();
+                        $this->Session->setFlash(implode(',', $errors));
+                  }
+	$this->redirect($this->referer());
+                   /*$this->redirect(array('action'=>'./index'));*/
+                  
     }
 
 
@@ -119,6 +127,51 @@ class CoursesController extends AppController {
                   }                    
     }
 
+	function launch($id = null) {
+                   
+	$record = $this->Course->Roster->find('first', array(
+                                     'fields' => 'id',
+                             	'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
+                                                                        'Roster.course_id' => $id)
+                  ));
+
+                   if($record) {
+ 		$this->Course->Roster->id = $record['Roster']['id']; 
+                                     $this->Course->Roster->saveField("completion_status", "Incomplete");  
+                  }
+
+                  else { 
+		$this->Course->Roster->create();
+                   	$this->Course->Roster->set(array(
+                          		 'course_id' => $id,                   
+                       	 	 'user_id' => $this->Auth->user('id'),
+                      	     	 'completion_status' => 'Incomplete'
+                  		 ));
+                 		if ($this->Course->Roster->validates()) {
+                       		$this->Course->Roster->save($this->data);
+                 		}
+                  		else  {
+                        		$errors = $this->Course->Roster->invalidFields();
+                        		$this->Session->setFlash(implode(',', $errors));
+                  		}
+                   }
+	$this->paginate = array('Lesson' => array('conditions'=> array('Lesson.course_id = ' => $id),
+			'limit' => 10, null, 'order' => array('Lesson.lesson_order' => 'asc')));
+                  $lessons = $this->paginate('Lesson');
+                  $this->set('lessons', $lessons);
+
+                  	$roster_course = $this->Course->Roster->find('first', array(
+                             	'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
+                                                                        'Roster.course_id' => $id)
+                  ));
+                  $this->set('roster_course', $roster_course);
+
+	$this->Course->id = $id;
+                  $course = $this->Course->read();
+                  $this->set('course', $course);
+
+
+}
 
 	function edit($id = null) 
     {

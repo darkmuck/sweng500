@@ -35,7 +35,12 @@
 				default:
 					break;
 			}
+
 		?>
-		
-	
-    
+
+<p><br />
+<?php		
+echo $this->Form->button('Launch', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'launch',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
+?>	
+</p>
+

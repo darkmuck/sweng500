@@ -9,9 +9,19 @@
  * Modified By: William DiStefano
 */
 ?>
-
+<head><style>
+.color {  color: #6699CC;}
+.right {   float:right;}
+</style></head>
+<div>
+<p class="right"><?php echo $this->Html->link('Bookmark This Lesson', array('controller' => 'bookmarks', 'action'=> 'add', $lesson['Lesson']['id'])); ?></p>
 <div>
     <h2><?php echo $lesson['Lesson']['name'];?> </h2>
     <hr />
     <b>Main Content:</b> <?php echo $lesson['Lesson']['main_content'] ?><br />
+</div>
+<div>
+  <p> <?php
+ echo $this->Html->link('Complete Lesson', array('controller' => 'lesson_statuses', 'action'=> 'add', $lesson['Lesson']['id'])); 
+    ?></p>
 </div>

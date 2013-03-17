@@ -17,30 +17,86 @@ public $belongsTo = array(
         'User', 'Course'
     );
 
+var $validate = array( 
+                "course_id"=>array( 
+                        "unique"=>array( 
+                                "rule"=>array("checkUnique", array("course_id", "user_id")),
+                                "message"=>"Course NOT added.  Already in roster!" 
+                         ), 
+                       "prereqComplete" => array(
+                                "rule" => array("isEligible", array("course_id", "user_id")),   
+                                "message" => "Prerequisites have not been met. Course NOT added!"
+                        )
+                  )
+ ); 
 
-/*
-var $validate = array(
-   'user_id' => array(
-      'rule' => array('noDuplicates', 'user_id'),
-      'message' => 'Course already in your roster.'
-    )
-);  
-*/
-/** 
- * Checks if there are records in Roster with the same userid and courseid
- * 
- */ 
-/*
-public function noDuplicates ($user_id, $course_id) {
-   $count = $this->find('count', array(
-      'conditions' => array(
-          'user_id' => $user_id 
-          'course_id' => $course_id)
-   ));
-   return $count == 0;
+function isEligible($data, $fields ) {
 
-} 
-*/
+               $prereq_count = 1;
+
+                if (!is_array($fields)) { 
+
+                        $fields = array($fields);
+ 
+                } 
+                foreach ($fields as $key) { 
+                            
+                            $tmp[$key] = $this->data[$this->name][$key]; 
+    
+                            if($key == 'course_id') {   
+                                       
+                                      $prereq = $this->Course->find('first', array(
+                                                     
+			'fields' => array('Course.course_id'),  
+                                                     
+			'conditions' => array('Course.id' => $tmp[$key])
+                                                       /* 'conditions' => array('Course.id' => 3)*/
+                                      )
+                                 );   
+                            }
+	        
+	         if ($prereq) {
+
+                                   if( $key == 'user_id') { 
+                                   
+                                       $prereq_count = $this->Course->Roster->find('count', array(
+
+                                       'conditions' => array('Roster.completion_status' => 'Complete', 'Roster.user_id' => $tmp[$key], 
+			/*'Roster.course_id' => 2)*/
+                                                                  'Roster.course_id' => $prereq['Course']['course_id'])
+                                                                   )
+                                        );
+                                  }
+                           }
+               } 
+                  
+                return $prereq_count>0; 
+ } 
+
+function checkUnique($data, $fields) { 
+
+                if (!is_array($fields)) { 
+
+                        $fields = array($fields); 
+
+                } 
+
+                foreach($fields as $key) { 
+
+                        $tmp[$key] = $this->data[$this->name][$key]; 
+
+                } 
+
+                if (isset($this->data[$this->name][$this->primaryKey])) { 
+
+                        $tmp[$this->primaryKey] = "<>".$this->data[$this->name][$this->primaryKey]; 
+                } 
+
+                return $this->isUnique($tmp, false); 
+
+        } 
+
+ 
 
 }
 	
