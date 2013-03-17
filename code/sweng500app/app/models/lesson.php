@@ -12,8 +12,8 @@
 class Lesson extends AppModel {
 
     var $name = 'Lesson';
-<<<<<<< HEAD
-    public $hasMany = array('LessonContent','Bookmark');
+
+    public $hasMany = array('LessonContent', 'Quiz', 'Bookmark');
     
     var $belongsTo = array(
         'Course' => array(
@@ -21,9 +21,6 @@ class Lesson extends AppModel {
          'foreignKey' => 'course_id'
         )
     );
-=======
-    var $hasMany = array('LessonContent','Quiz');
 
->>>>>>> origin/master
 }
 ?>
