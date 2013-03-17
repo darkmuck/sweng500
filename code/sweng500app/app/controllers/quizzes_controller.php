@@ -61,9 +61,10 @@ class QuizzesController extends AppController {
 				$this->data['Quiz']['lesson_id']));
 		} else {
 			$quiz = $this->Quiz->findById($quizId);
+			$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
 			$this->data['Quiz'] = $quiz['Quiz'];
 			$this->data['Question'] = $quiz['Question'];
-			$this->data['Lesson']['name'] = $quiz['Lesson']['name'];
+			$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
 			$this->set('types', array('Fill in the blank', 'Multiple choice'));
 		}
 		
@@ -84,9 +85,6 @@ class QuizzesController extends AppController {
 		
 	}
 	
-	function take($quizId = null) {
-		
-	}
 }
 
 ?>

@@ -11,19 +11,17 @@
 
 class QuizGrader extends AppModel{
 	var $useTable = false;
-	function grade($quiz, $quizSubmission) {
+	function grade($quiz, $quizSubmissions) {
 		$results = new Results();
 		$results->totalPoints = $this->calculatePoints($quiz);
 		
 		foreach($quiz['Question'] as $question) {
 			$correctAnswer = $this->getCorrectAnswerFromQuestion($question);
 			$submittedAnswer = $this->getSubmittedAnswer($question['id'],
-				$quizSubmission['SubmittedAnswer']);
-			
+				$quizSubmissions);
 			if(!is_null($submittedAnswer) && 
 				$correctAnswer->isValueCorrect($submittedAnswer['answer'])) {
-				$results->addPoints($correctAnswer->points);
-				$results->addCorrectAnswer($question['id']);
+				$results->addCorrectAnswer($question['id'], $correctAnswer->points);
 			} else {
 				$results->addIncorrectAnswer($question['id']);
 			}
@@ -34,8 +32,8 @@ class QuizGrader extends AppModel{
 	
 	function getSubmittedAnswer($questionId, $answers) {
 		foreach($answers as $answer) {
-			if($answer['question_id'] == $questionId) {
-				return $answer;
+			if($answer['QuizSubmission']['question_id'] == $questionId) {
+				return $answer['QuizSubmission'];
 			}
 		}
 		return null;
@@ -43,12 +41,18 @@ class QuizGrader extends AppModel{
 	
 	function getCorrectAnswerFromQuestion($question) {
 		$correctAnswer = new CurrentAnswer();
+		$correctAnswer->questionType = $question['type'];
 		$correctAnswer->questionId = $question['id'];
 		$correctAnswer->points = $question['points'];
 		
 		foreach($question['Answer'] as $answer) {
 			if($answer['correct']) {
-				$correctAnswer->answer = $answer['value'];
+				if($question['type'] == 0) {
+					$correctAnswer->answer = $answer['value'];
+				} else if($question['type'] == 1) {
+					$correctAnswer->answer = $answer['id'];
+				}
+				
 			}
 		}
 		
@@ -68,36 +72,71 @@ class QuizGrader extends AppModel{
 //classes used by the algorithm to put merge info from both the question and answer "objects"
 class CurrentAnswer {
 	var $questionId;
+	var $questionType;
 	var $answer;
 	var $points;
 	
 	public function isValueCorrect($submittedAnswer) {
-		return (strtolower(trim($this->answer)) == strtolower(trim($submittedAnswer)));
+		$correct = false;
+		switch($this->questionType) {
+			case 0:
+				$correct = (strtolower(trim($this->answer)) == strtolower(trim($submittedAnswer)));
+				break;
+			case 1:
+				$correct = intval($submittedAnswer) == intval($this->answer);
+				
+		}
+
+		return $correct;
 	}
 }
 
 //This class is the result of the quiz. Has total points, (in)correct answers and points received
 class Results {
 	var $answerRubric = array();
-	var $points;
+	var $points = array();
 	var $totalPoints;
 	
 	public function Results(){}
 	
-	public function addPoints($points) {
-		$this->points += $points;
-	}
 	
-	public function addCorrectAnswer($questionId) {
+	public function addCorrectAnswer($questionId, $points) {
 		$this->answerRubric[$questionId] = true;
+		$this->points[$questionId] = $points;
 	}
 	
 	public function addIncorrectAnswer($questionId) {
 		$this->answerRubric[$questionId] = false;
+		$this->points[$questionId] = 0;
 	}
 	
 	public function isAnswerCorrect($questionId) {
 		return $this->answerRubric[$questionId];
+	}
+	
+	public function getCorrectPoints() {
+		$p = 0;
+		foreach($this->points as $correctPoints) {
+			$p += $correctPoints;
+		}
+		return $p;
+	}
+	
+	public function getPercentage() {
+		return ($this->getCorrectPoints()/$this->totalPoints)*100;
+	}
+	
+	public function getNumberCorrect() {
+		$c = 0;
+		foreach($this->answerRubric as $answer) {
+			$c += $answer ? 1 : 0;
+		}
+		
+		return $c;
+	}
+	
+	public function getNumberOfQuestions() {
+		return sizeof($this->answerRubric);
 	}
 	
 	

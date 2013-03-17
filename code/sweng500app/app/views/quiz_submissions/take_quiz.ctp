@@ -18,31 +18,28 @@
     <table class="table">
     <tr>
         <th>Question</th>
-        <th>Answer</th>
     </th>
         <?php $count = 0; ?>
     	<?php
     	    foreach ($questions as $question) {
     	    echo '<tr>
-    	              <td>'. $question['Question']['question'] .'
-    	              </td>
-    	              <td>';
+    	              <td>'. $question['Question']['question'] . '<br />';
     	?>
     	              	<?php echo $this->Form->input('QuizSubmission.'. $count .'.user_id', array('type'=>'hidden','value'=>$userId)); ?>
     	              	<?php echo $this->Form->input('QuizSubmission.'. $count .'.quiz_id', array('type'=>'hidden','value'=>$quiz['Quiz']['id'])); ?>
     	                <?php echo $this->Form->input('QuizSubmission.'. $count .'.question_id', array('type'=>'hidden','value'=>$question['Question']['id'])); ?>
     	                <?php 
-    	                    if ($question['Question']['type'] == '4') {
+    	                    if ($question['Question']['type'] == '1') {
     	                    	$options = array();
     	                    	foreach ($question['Answer'] as $answer) {
     	                    	    $options[$answer['id']] = $answer['value'];	
     	                    	}
-    	                    	echo $this->Form->input('QuizSubmission.'. $count .'.answer', array('options'=>$options,'label'=>false,'empty'=>true));
+    	                    	echo $this->Form->input('QuizSubmission.'. $count .'.answer', array('type' => 'radio', 'options'=>$options,'legend'=>false));
     	                    } else {
     	                    	echo $this->Form->input('QuizSubmission.'. $count .'.answer', array('type'=>'text','size'=>'15','maxLength'=>'50','label'=>false));
     	                    }
     	                ?>
-    	                  </td>
+	                  </td>
     	        </tr>
         <?php
             $count++;
