@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
     id  INTEGER(8) NOT NULL AUTO_INCREMENT,
     lesson_id INTEGER(8) NULL,
     course_id INTEGER(8) NULL,
+    name VARCHAR(50) DEFAULT NULL,
     created DATETIME DEFAULT NULL,
     modified DATETIME DEFAULT NULL,
     PRIMARY KEY(id)
