@@ -12,6 +12,7 @@
 <head><style>
 .color {  color: #6699CC;}
 .right {   float:right;}
+.padded td { padding: 10px; }
 </style></head>
 <div>
 <p class="right"><?php echo $this->Html->link('Bookmark This Lesson', array('controller' => 'bookmarks', 'action'=> 'add', $lesson['Lesson']['id'])); ?></p>
@@ -20,8 +21,72 @@
     <hr />
     <b>Main Content:</b> <?php echo $lesson['Lesson']['main_content'] ?><br />
 </div>
+
+<?php
+	if(!empty($lesson['LessonContent'])):
+?>
 <div>
-  <p> <?php
- echo $this->Html->link('Complete Lesson', array('controller' => 'lesson_statuses', 'action'=> 'add', $lesson['Lesson']['id'])); 
+	<hr/>
+	<p style="font-weight: bold;">Uploaded Supporting Content</p>
+	<table class="padded">
+<?php foreach($lesson['LessonContent'] as $lc): ?>	
+		<tr>
+			<td>
+				<?php echo $lc['filename']; ?>
+			</td>
+			<td>
+				<?php echo $this->Html->link('Download', 
+					array('controller' => 'LessonContents', 'action' => 'download', $lc['id'])); ?>
+			</td>
+		</tr>
+<?php endforeach; ?>
+	</table>
+</div>
+<?php
+	endif;
+?>
+
+<hr />
+<div>
+  <?php
+  	if($isStudent):
+  ?>
+  	<p style="font-weight: bold;">Take Quizzes in order to complete lesson</p>
+  	<table class="padded">
+  		<tr>
+  			<th>Quiz Name</th>
+  			<th></th>
+		</tr>
+  <?php
+  		foreach($lesson['Quiz'] as $quiz):
+  ?>
+  		<tr>
+  			<td><?php echo $quiz['name']; ?></td>
+  			<td>
+  				<?php
+  					if(!in_array($quiz['id'], $completedQuizzes)) {
+	  				    echo $this->Html->link('Take Quiz', 
+	  						array('controller' => 'quiz_submissions', 'action' => 'take_quiz', $quiz['id']));
+  					} else {
+  						echo $this->Html->link('View Results',
+  							array('controller' => 'quiz_submissions', 'action' => 'results', $quiz['id'], $Auth['User']['id']));
+  					}
+				?>
+			</td>
+		</tr>
+				
+  <?php
+  		endforeach;
+  ?>
+  	</table>
+  <?php
+  	endif;
+  ?>
+	<hr />
+  <p class="right"> <?php
+  	if($isStudent && sizeof($lesson['Quiz']) == sizeOf($completedQuizzes)) {
+ 		echo $this->Html->link('Complete Lesson', 
+ 			array('controller' => 'lesson_statuses', 'action'=> 'add', $lesson['Lesson']['id']));
+  	} 
     ?></p>
 </div>

@@ -66,5 +66,10 @@
     	    } 
     	?>
     </table>
+    
+    
+    <?php echo $this->Html->link('Return to Lesson', 
+    	array('controller' => 'lessons', 'action' => 'view', $quiz['Quiz']['lesson_id']));
+	?>
 
 </div>

@@ -79,6 +79,26 @@ class LessonsController extends AppController {
 		$this->Lesson->id = $lessonId;
 		$lesson = $this->Lesson->read();
 		$this->set('lesson', $lesson);
+		
+		$isStudent = $this->Auth->User('type_id') == 3;
+		$this->set('isStudent', $isStudent);
+		
+		if($isStudent) {
+			$this->loadModel('QuizSubmissions');
+			$completedQuizzes = array();
+			foreach($lesson['Quiz'] as $quiz) {
+				$quizSub = $this->QuizSubmissions->find('first', array('conditions' => 
+						array('QuizSubmissions.quiz_id' => $quiz['id'], 
+							'QuizSubmissions.user_id' => $this->Auth->User('id'))
+						));
+				if($quizSub) {
+					array_push($completedQuizzes, $quiz['id']);
+				}
+						
+			}
+			$this->set('completedQuizzes', $completedQuizzes);
+		}
+		
 	}
 }
 

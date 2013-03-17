@@ -10,7 +10,6 @@
 */
 
 class QuizSubmission extends AppModel {
-	var $actsAs = 'Containable';
 	var $recursive = 2;
 	var $name = 'QuizSubmission';
 	

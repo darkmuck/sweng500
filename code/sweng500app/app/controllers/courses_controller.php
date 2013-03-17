@@ -204,6 +204,9 @@ class CoursesController extends AppController {
 					$id = $course['Course']['id'];
 					CoursesController::extract($id);
 				}
+				$this->redirect(array('action' => './index'));  
+			} else {
+				$this->Session->setFlash('Error: unable to edit course');
 			}
 		}
     }
