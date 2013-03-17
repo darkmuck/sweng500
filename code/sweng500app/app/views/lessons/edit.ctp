@@ -79,5 +79,31 @@
         <?php endforeach; ?>
     </table>
     
+    <h3>Quizzes for Lesson</h3>
+    <?php
+    	echo '<p>'.$this->Html->link('Add Quiz', array('controller' => 'quizzes', 'action' => 'add', $lesson['Lesson']['id'], $lesson['Lesson']['course_id']), array('class' => 'btn btn-primary')) . '</p>';
+    ?>
+    <table class="table">
+    	<tr>
+    		<th>Quiz Name</th>
+    		<th></th>
+		</tr>
+	<?php
+		foreach($lesson['Quiz'] as $quiz) {
+	?>
+		<tr>
+			<td><?php echo $quiz['name']; ?></td>
+			<td>
+				<?php 
+					echo $this->Html->link('Edit Quiz', array('controller' => 'quizzes', 'action' => 'edit', $quiz['id']), array('class' => 'btn btn-warning'));
+					echo $this->Html->link('Delete Quiz', array('controller' => 'quizzes', 'action' => 'delete', $quiz['id'], $lesson['Lesson']['id']), array('class' => 'btn btn-danger'), 'Are you sure you want to delete this quiz?');
+				?>
+			</td>
+		</tr>
+	<?php
+		}
+	?>
+	</table>
+    
     <?php echo $this->Form->end();?>
 </div>

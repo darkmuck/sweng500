@@ -96,8 +96,13 @@ class CourseControllerTest extends CakeTestCase {
 		$count = count($this->TestCourseController->viewVars['courses']);
 		$this->assertTrue( $count >= 1);
 	}	
+<<<<<<< HEAD
 
 	function testAdd() {
+=======
+	
+/*	function testAdd() {
+>>>>>>> origin/master
 		$this->TestCourseController->data = array('Course' => $this->debugCourse);
 
 		$this->TestCourseController->params = Router::parse('/Courses/add');
@@ -105,8 +110,9 @@ class CourseControllerTest extends CakeTestCase {
 
 		$this->TestCourseController->add();
 
-		$this->assertNotEqual($this->TestCourseController->redirectUrl, array('action'=> 'index'));
+		$this->assertNotEqual($this->TestCourseController->redirectUrl, array('action'=> 'index')); 
 	}
+*/
 
 	function testView() {
 		$id = 10;
@@ -114,12 +120,18 @@ class CourseControllerTest extends CakeTestCase {
 		$this->TestCourseController->beforeFilter();
 
 		$this->TestCourseController->view($id);
-		$this->assertEqual($this->TestCourseController->viewVars['course']['Course']['course_number'], 
+		$this->assertNotEqual($this->TestCourseController->viewVars['course']['Course']['course_number'], 
 			$this->debugCourse['course_number']);
 	}
+<<<<<<< HEAD
 
 	function testEdit() {
 
+=======
+	
+/*	function testEdit() {
+		
+>>>>>>> origin/master
 		$this->debugCourse['course_name'] = 'TestEditCourse';
 		$this->TestCourseController->data = array('Course' => $this->debugCourse);
 
@@ -133,7 +145,12 @@ class CourseControllerTest extends CakeTestCase {
 
 		$this->assertEqual($course['Course']['course_name'], $this->debugCourse['course_name']);
 	}
+<<<<<<< HEAD
 
+=======
+*/
+	
+>>>>>>> origin/master
 	function testDelete() {
 		$id = 10;
 		$this->TestCourseController->params = Router::parse('/Courses/delete');
@@ -143,6 +160,7 @@ class CourseControllerTest extends CakeTestCase {
 		$this->TestCourseController->Course->id = $id;
 		$this->assertFalse($this->TestCourseController->Course->read());
 	}
+<<<<<<< HEAD
 
 	function testEnroll() {
                                      $id = 3;
@@ -166,6 +184,27 @@ class CourseControllerTest extends CakeTestCase {
 
 
 	}
+=======
+	
+	function testArchive() {
+		$id = 10;
+		$this->TestCourseController->params = Router::parse('/Courses/archive');
+		$this->TestCourseController->beforeFilter();
+		
+		$this->TestCourseController->archive($id);
+		$this->assertTrue(file_exists('../models/datasources/archive10.zip'));
+	}
+	
+	function testExtract() {
+		$id = 6;
+		$this->TestCourseController->params = Router::parse('/Courses/archive');
+		$this->TestCourseController->beforeFilter();
+		
+		$this->TestCourseController->extract($id);
+		$this->assertFalse(file_exists('../models/datasources/archive6.zip'));
+	}
+	
+>>>>>>> origin/master
 
 }	
 
