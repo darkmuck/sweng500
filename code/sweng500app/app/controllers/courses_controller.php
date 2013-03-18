@@ -204,9 +204,6 @@ class CoursesController extends AppController {
 					$id = $course['Course']['id'];
 					CoursesController::extract($id);
 				}
-				$this->redirect(array('action' => './index'));  
-			} else {
-				$this->Session->setFlash('Error: unable to edit course');
 			}
 		}
     }
@@ -220,6 +217,8 @@ class CoursesController extends AppController {
 		$course = $this->Course->data;
 
 		$course_archive_id = $id;
+		
+		$lesson_archive_id = null;
 		
 		$course_archive_number = $course['Course']['course_number'];
 	
@@ -279,14 +278,107 @@ class CoursesController extends AppController {
 	
 	function extract($id = null)
 	{
+	
+		$this->Course->id = $id;
+		$this->Course->read();
+		$course = $this->Course->data;
 
+		$course_archive_id = $id;
+		
+		$course_archive_number = $course['Course']['course_number'];
+	
+		$zip = new ZipArchive;		
+
+		$zipper = $zip->open('../models/datasources/' . $course_archive_number . 'archive.zip');
+		if ($zipper === TRUE)
+		{
+			$extractDir = '../models/datasources/' . $course_archive_number;
+			$zip->extractTo($extractDir);
+    		$zip->close();
+			
+			
+			
+			$extractHandle = opendir($extractDir);
+			while (($eachfile = readdir($extractHandle)) !== false)
+			{	
+			
+				$contenttype = substr(basename($eachfile), 0, 4);
+							
+				switch ($contenttype) 
+				{
+    				case 'cont': //lessoncontent
+					
+						$content_pos = 0;
+						$lesson_pos = strpos($eachfile, 'lesson');
+						$course_pos = strpos($eachfile, 'course');
+						$content_num = substr($eachfile, ($content_pos + 7), ($lesson_pos - ($content_pos + 7)));
+						$lesson_num = substr($eachfile, ($lesson_pos + 6), ($course_pos - ($lesson_pos + 6)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('LessonContent');
+						$this->LessonContent->read();
+						
+						$this->LessonContent->set('id', $content_num);
+						$this->LessonContent->set('lesson_id', $lesson_num);
+						$this->LessonContent->set('filename', $content_data[0]);
+						$this->LessonContent->set('filesize', $content_data[1]);
+						$this->LessonContent->set('content', $content_data[2]);
+						$this->LessonContent->set('filetype', $content_data[3]);
+						$this->LessonContent->set('created', $content_data[4]);
+						$this->LessonContent->set('modified', $content_data[5]);
+												
+        				$this->LessonContent->save();
+						
+						unlink("$extractDir/$eachfile");
+        			break;
+					
+    				case 'less': //lesson
+					
+						$lesson_pos = 0;
+						$course_pos = strpos($eachfile, 'course');
+						$lesson_num = substr($eachfile, ($lesson_pos + 6), ($course_pos - ($lesson_pos + 6)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('Lesson');
+						$this->Lesson->read();
+						
+						$this->Lesson->set('id', $lesson_num);
+						$this->Lesson->set('course_id', $course_archive_id);
+						$this->Lesson->set('name', $content_data[0]);
+						$this->Lesson->set('created', $content_data[1]);
+						$this->Lesson->set('modified', $content_data[2]);
+						$this->Lesson->set('main_content', $content_data[3]);
+						$this->Lesson->set('lesson_order', $content_data[4]);
+												
+        				$this->Lesson->save();
+						
+						unlink("$extractDir/$eachfile");
+					break;
+					
+					case '.': break;
+					
+					case '..': break;
+					
+					default:
+					unlink("$extractDir/$eachfile");
+					break;
+				}
+			}
+			closedir($extractHandle);
+			rmdir($extractDir);
+			unlink('../models/datasources/' . $course_archive_number . 'archive.zip');
+					
+			$this->Session->setFlash('Course has been extracted');             
+			$this->redirect(array('action' => './index'));
+   		}
+		else
+		{
+			$this->Session->setFlash('Course has been saved');             
+			$this->redirect(array('action' => './index'));
+		}
 	}
-	
-
-
-	
-	
-	
 }
 
 ?>
