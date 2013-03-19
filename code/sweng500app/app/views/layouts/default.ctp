@@ -15,7 +15,7 @@
   <div class="wrap">
     <div class="container">
         <div class="header">
-            <h1>Team 3 eLearning System</h1>
+            <?php echo $this->Html->image('logo2.png', array('alt' => 'Team 3 eLearning System'))?>
         </div>
         <div class="navbar">
         <div class="navbar-inner">
@@ -30,7 +30,10 @@
             } else {
                 echo '<li>'. $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout')) .'</li>';
             }
-            echo '</li>';
+			echo '<li>'. $this->Html->link('About', array('controller'=>'About','action'=>'index')) .'</li>';
+			echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'ContactUs','action'=>'index')) .'</li>';
+			echo '<li>'. $this->Html->link('Help', array('controller'=>'Help','action'=>'index')) .'</li>';
+            
 
 
         ?>
