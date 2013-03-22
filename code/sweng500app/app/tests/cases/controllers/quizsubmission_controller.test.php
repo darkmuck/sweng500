@@ -31,6 +31,15 @@ class TestQuizSubmissionsController extends QuizSubmissionsController {
 
 class QuizSubmissionsControllerTest extends CakeTestCase {
 	
+	var $debugCourse = array('id' => -1,
+		'course_number' => 'testc1', 
+		'course_name' => 'testcourse1',
+		'lesson_completion' => 100,
+		'quiz_passing_score' => 70,
+		'course_status' => 'C',
+        'course_id' => NULL,
+        'user_id' => 1);
+	
 	var $testLesson = array('Lesson' => array(
 		'id' => -1,
 		'course_id' => -1,
@@ -108,13 +117,37 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 				'quiz_id' => -1,
 				'user_id' => 1,
 				'question_id' => -1,
-				'answer' => 'ttwo'),
+				'answer' => 'two'),
 				array(
 				'id' => -2,
 				'quiz_id' => -1,
 				'user_id' => 1,
 				'question_id' => -2,
 				'answer' => -2),
+				array(
+				'id' => -3,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -3,
+				'answer' => 'No')
+			)
+		
+	);
+	
+	var $testFailedQuizSubmission = array(
+		'QuizSubmission' => array(
+				array(
+				'id' => -1,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -1,
+				'answer' => 'ttwo'),
+				array(
+				'id' => -2,
+				'quiz_id' => -1,
+				'user_id' => 1,
+				'question_id' => -2,
+				'answer' => -3),
 				array(
 				'id' => -3,
 				'quiz_id' => -1,
@@ -137,12 +170,28 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 		ClassRegistry::flush();
 	}
 	
-	function testTake_Quiz() {
+	function saveQuiz() {
+		$this->TestQuizSubmissionsController->loadModel('Course');
+		$this->TestQuizSubmissionsController->Course->save($this->debugCourse);
 		$this->TestQuizSubmissionsController->Lesson->save($this->testLesson);
 		$this->TestQuizSubmissionsController->Quiz->save($this->testQuiz);
 		foreach($this->testQuiz['Question'] as $question) {
 			$this->TestQuizSubmissionsController->Quiz->Question->saveAll($question);
 		}
+	}
+	
+	function cleanup() {
+		$this->TestQuizSubmissionsController->loadModel('Course');
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-1);
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-2);
+		$this->TestQuizSubmissionsController->QuizSubmission->delete(-3);
+		$this->TestQuizSubmissionsController->Quiz->delete($this->testQuiz['Quiz']['id']);
+		$this->TestQuizSubmissionsController->Lesson->delete($this->testLesson['Lesson']['id']);
+		$this->TestQuizSubmissionsController->Course->delete($this->debugCourse['id']);
+	}
+	
+	function testTake_Quiz() {
+		$this->saveQuiz();
 		
 		$this->TestQuizSubmissionsController->QuizSubmission->Behaviors->attach('Containable');
 		$this->TestQuizSubmissionsController->data = $this->testQuizSubmission;
@@ -155,7 +204,6 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 		$this->assertNotNull($this->TestQuizSubmissionsController->QuizSubmission->find('all', 
 			array('conditions' => array('QuizSubmission.quiz_id' => $this->testQuiz['Quiz']['id']))));
 			
-
 	}
 	
 	function testResults(){ 
@@ -163,16 +211,31 @@ class QuizSubmissionsControllerTest extends CakeTestCase {
 		$this->TestQuizSubmissionsController->params['url']['url'] ='/QuizSubmissions/results';
 		$this->TestQuizSubmissionsController->beforeFilter();
 		
-		$this->TestQuizSubmissionsController->results(10,1);
+		$this->TestQuizSubmissionsController->results(-1, 1);
 		$this->assertNotNull($this->TestQuizSubmissionsController->viewVars['results']);
 		
-		//cleanup
-		$this->TestQuizSubmissionsController->QuizSubmission->delete(-1);
-		$this->TestQuizSubmissionsController->QuizSubmission->delete(-2);
-		$this->TestQuizSubmissionsController->QuizSubmission->delete(-3);
-		$this->TestQuizSubmissionsController->Quiz->delete($this->testQuiz['Quiz']['id']);
-		$this->TestQuizSubmissionsController->Lesson->delete($this->testLesson['Lesson']['id']);
+		$this->cleanup();
 		
 	} 
+	
+	function testFailedTestResults() {
+		$this->saveQuiz();	
+		$this->TestQuizSubmissionsController->QuizSubmission->saveAll($this->testFailedQuizSubmission['QuizSubmission']);
+		
+		$this->assertNotNull($this->TestQuizSubmissionsController->QuizSubmission->find('all', 
+			array('conditions' => array('QuizSubmission.quiz_id' => $this->testQuiz['Quiz']['id']))));
+		
+		$this->TestQuizSubmissionsController->params = Router::parse('/QuizSubmissions/results');
+		$this->TestQuizSubmissionsController->params['url']['url'] ='/QuizSubmissions/results';
+		$this->TestQuizSubmissionsController->beforeFilter();	
+		$this->TestQuizSubmissionsController->results(-1,1);
+		
+		$this->assertFalse($this->TestQuizSubmissionsController->QuizSubmission->find('all', 
+			array('conditions' => array('QuizSubmission.quiz_id' => $this->testQuiz['Quiz']['id']))));
+			
+		$this->cleanup();
+	}
+	
+
 }
 ?>

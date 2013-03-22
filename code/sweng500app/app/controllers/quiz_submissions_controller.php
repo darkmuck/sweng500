@@ -48,22 +48,33 @@ class QuizSubmissionsController extends AppController {
 	 		
 	 		$quiz = $this->Quiz->find('first', array('conditions' => array('Quiz.id' => $quizId), 
 				'contain' => false));
-	 		
 	 		$quizResult = $this->QuizGrader->grade($quiz, $quizsub);
-			
-			foreach($quizsub as $quizSubmission) {
-				foreach($quizResult->answerRubric as $key => $correct) {
-					if($quizSubmission['QuizSubmission']['question_id'] == $key) {
-						$quizSubmission['QuizSubmission']['points'] = 
-							$quizResult->points[$quizSubmission['QuizSubmission']['question_id']];
-						$this->QuizSubmission->save($quizSubmission);
+	 		
+	 		$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
+	 		
+	 		//if the quiz passed update the submissions and show results. 
+	 		//If not, redirect back to the lesson page and remove the submission.
+	 		
+	 		if($quizResult->getPercentage() >= $lesson['Course']['quiz_passing_score']) {
+				foreach($quizsub as $quizSubmission) {
+					foreach($quizResult->answerRubric as $key => $correct) {
+						if($quizSubmission['QuizSubmission']['question_id'] == $key) {
+							$quizSubmission['QuizSubmission']['points'] = 
+								$quizResult->points[$quizSubmission['QuizSubmission']['question_id']];
+							$this->QuizSubmission->save($quizSubmission);
+						}
 					}
 				}
-			}
 
-			$this->set('quizSubmission', $quizsub);
-			$this->set('quiz', $quiz);
-			$this->set('results', $quizResult);
+				$this->set('quizSubmission', $quizsub);
+				$this->set('quiz', $quiz);
+				$this->set('results', $quizResult);
+	 		} else {
+	 			$this->QuizSubmission->deleteAll(array('QuizSubmission.quiz_id' => $quizId,
+	 				'QuizSubmission.user_id' => $userId));
+	 			$this->Session->setFlash('You did not pass the quiz. Please try again');
+	 			$this->redirect(array('controller'=>'Lessons', 'action' => 'view', $lesson['Lesson']['id']));
+	 		}
 		} else {
 			//error case
 		}
