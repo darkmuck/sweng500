@@ -81,7 +81,7 @@
     
     <h3>Quizzes for Lesson</h3>
     <?php
-    	echo '<p>'.$this->Html->link('Add Quiz', array('controller' => 'quizzes', 'action' => 'add', $lesson['Lesson']['id'], $lesson['Lesson']['course_id']), array('class' => 'btn btn-primary')) . '</p>';
+    	echo '<p>'.$this->Html->link('Add Quiz', array('controller' => 'quizzes', 'action' => 'add', 'Lesson', $lesson['Lesson']['id']), array('class' => 'btn btn-primary')) . '</p>';
     ?>
     <table class="table">
     	<tr>

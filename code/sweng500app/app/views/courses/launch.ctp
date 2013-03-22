@@ -17,9 +17,11 @@
 
 <div>
 <h2 class="color">Course Home</h2>
-<h4><?php echo $course['Course']['course_name'];?></h4> 
-<p class="right"><?php echo $this->Html->link('Take Course Test', array('controller' => 'courses', 'action'=> 'launch', $course['Course']['id'])); ?></p>
+<h4><?php echo $course['Course']['course_name'];?></h4>
+<?php if(!empty($course['Quiz']['id'])): ?> 
+<p class="right"><?php echo $this->Html->link('Take Course Test', array('controller' => 'quiz_submissions', 'action'=> 'take_quiz', $course['Quiz']['id'])); ?></p>
 <p class="right color">&nbsp&nbsp|&nbsp&nbsp</p>
+<?php endif; ?>
   <p class="right"><?php echo $this->Html->link('Bookmarks', array('controller' => 'bookmarks', 'action'=>'index',$course['Course']['id']));?></p>
     
 

@@ -15,6 +15,7 @@ class Course extends AppModel {
     var $hasMany = array(
         'Roster','Lesson'
     );	
+    var $hasOne = 'Quiz';
     var $belongsTo = array(
     	'User' => array(
     		'className' => 'User')

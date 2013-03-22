@@ -67,6 +67,19 @@
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
             if($Auth['User']['id'] == $course['Course']['user_id']) {
             	echo $this->Form->button('Manage Lessons', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'Lessons','action'=>'index',$course['Course']['id']))."'", 'class'=>'btn btn-info'));
+            	if(empty($course['Quiz']['id'])) {
+            		echo $this->Html->link('Add Course Test', 
+            			array('controller' => 'quizzes', 'action' => 'add', 'Course', $course['Course']['id']),
+            			array('class' => 'btn btn-info'));
+            	} else {
+            		echo $this->Html->link('Edit Course Test', 
+            			array('controller' => 'quizzes', 'action' => 'edit', $course['Quiz']['id']),
+            			array('class' => 'btn btn-info'));
+        			echo $this->Html->link('Delete Course Test', 
+        				array('controller' => 'quizzes', 'action' => 'delete', $course['Quiz']['id']), 
+        				array('class' => 'btn btn-danger'), 
+						'Are you sure you want to delete this course test?');
+            	}
             } else if ($Auth['User']['type_id'] == 1) {
 	            echo $this->Form->button('Edit', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'edit',$course['Course']['id']))."'", 'class'=>'btn btn-warning'));
 	            echo $this->Html->link('Delete', array('controller' => 'courses', 'action' => 'delete', $course['Course']['id']), array('class' => 'btn btn-danger'), 'Are you sure you want to delete this course?');

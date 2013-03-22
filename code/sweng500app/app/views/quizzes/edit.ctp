@@ -212,14 +212,21 @@
 
 <div>
 	<?php echo $this->Form->create('Quiz', array('url'=>'/quizzes/edit')); ?>
+    <?php if (!empty($this->data['Lesson']['name'])): ?>
     <h2>Quiz for <?php echo $this->data['Lesson']['name'] ?></h2>
+    <?php elseif (!empty($this->data['Course']['course_name'])): ?>
+    <h2>Course Test for <?php echo $this->data['Course']['course_name']; ?></h2>
+    <?php endif; ?>
     
     <?php
     	  echo $this->Form->hidden('Lesson.name', array('value' => $this->data['Quiz']['lesson_id']));
     	  echo $this->Form->hidden('Quiz.id', array('type' => 'hidden', 'value' => $this->data['Quiz']['id']));
      	  echo $this->Form->hidden('Quiz.lesson_id', array('value' => $this->data['Quiz']['lesson_id'])); 
      	  echo $this->Form->hidden('Quiz.course_id', array('value' => $this->data['Quiz']['course_id'])); 
-     	  echo $this->Form->input('Quiz.name', array('label' => 'Quiz Name:', 'maxlength' => 50, 'size' => 10)); ?>
+     	  if(!empty($this->data['Lesson']['name'])) { 
+    	 	  echo $this->Form->input('Quiz.name', array('label' => 'Quiz Name:', 'maxlength' => 50, 'size' => 10));
+     	  } 
+    ?>
  	<br/>
  	<b>Questions</b>
  	<?php echo $this->Form->button('Add Question', array('type' => 'button', 'onClick' => 'javascript:addQuestion()')); ?>

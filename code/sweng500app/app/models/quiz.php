@@ -15,7 +15,6 @@ class Quiz extends AppModel {
     var $name = 'Quiz';
     
     var $hasMany = array('Question', 'QuizSubmission');
-//    var $belongsTo = array('Lesson');
     
 
 }

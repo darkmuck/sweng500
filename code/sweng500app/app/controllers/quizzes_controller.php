@@ -15,7 +15,7 @@ class QuizzesController extends AppController {
 	
 	function index() {}
 	
-	function add($lessonId = null, $courseId = null) {
+	function add($type = 'Lesson', $id = null) {
 
 		if(!empty($this->data)) {
 			$this->Quiz->save($this->data);
@@ -24,17 +24,30 @@ class QuizzesController extends AppController {
 				$question['quiz_id'] = $quizId;
 				$this->Question->saveAll($question);
 			}
-			$this->Session->setFlash('Successfully added quiz');
-			$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
-				$this->data['Quiz']['lesson_id']));
+			
+			if(!empty($this->data['Quiz']['lesson_id'])) {
+				$this->Session->setFlash('Successfully added quiz');
+				$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
+					$this->data['Quiz']['lesson_id']));
+			} else {
+				$this->Session->setFlash('Successfully added course test');
+				$this->redirect(array('controller' => 'Courses', 'action' => 'index'));
+			}
 		}
 
-		if(!empty($lessonId)) {
-			$lesson = $this->Lesson->findById($lessonId);
+		if($type == 'Lesson' && !empty($id)) {
+			$lesson = $this->Lesson->findById($id);
 			$this->data['Quiz']['lesson_id'] = $lesson['Lesson']['id'];
-			$this->data['Quiz']['course_id'] = $lesson['Lesson']['course_id'];
+			$this->data['Quiz']['course_id'] = NULL;
 			$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
 			$this->set('lesson', $lesson);
+		} else if ($type == 'Course' && !empty($id)) {
+			$this->loadModel('Course');
+			$course = $this->Course->findById($id);
+			$this->data['Quiz']['course_id'] = $course['Course']['id'];
+			$this->data['Quiz']['lesson_id'] = NULL;
+			$this->data['Course']['course_name'] = $course['Course']['course_name'];
+			$this->set('course', $course);
 		}
 		$this->set('types', array('Fill in the blank', 'Multiple choice'));
 
@@ -56,15 +69,29 @@ class QuizzesController extends AppController {
 				}
 				$this->Question->saveAll($question);
 			}
-			$this->Session->setFlash('Successfully edited quiz');
-			$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
-				$this->data['Quiz']['lesson_id']));
+			
+			if(!empty($this->data['Quiz']['lesson_id'])) {
+				$this->Session->setFlash('Successfully edited quiz');
+				$this->redirect(array('controller' => 'lessons', 'action' => 'edit', 
+					$this->data['Quiz']['lesson_id']));
+			} else {
+				$this->Session->setFlash('Successfully edited course test');
+				$this->redirect(array('controller' => 'Courses', 'action' => 'index'));
+			}
 		} else {
 			$quiz = $this->Quiz->findById($quizId);
-			$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
+			if(!empty($quiz['Quiz']['lesson_id'])) {
+				$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
+				$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
+			} else {
+				$this->loadModel('Course');
+				$course = $this->Course->findById($quiz['Quiz']['course_id']);
+				$this->data['Course']['course_name'] = $course['Course']['course_name'];
+			}
+			
 			$this->data['Quiz'] = $quiz['Quiz'];
 			$this->data['Question'] = $quiz['Question'];
-			$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
+			
 			$this->set('types', array('Fill in the blank', 'Multiple choice'));
 		}
 		
@@ -73,14 +100,21 @@ class QuizzesController extends AppController {
 	
 	
 	
-	function delete($id = null, $lessonId = null) {
-		if(!empty($id) && !empty($lessonId)) {
+	function delete($id = null) {
+		if(!empty($id)) {
+			$q = $this->Quiz->findById($id);
 			$this->Quiz->delete($id);
-			$this->Session->setFlash('The quiz has been deleted');
-			$this->redirect(array('controller'=>'lessons','action'=>'edit', $lessonId));
+			if(!empty($q['Quiz']['lesson_id'])) {
+				$this->Session->setFlash('The quiz has been deleted');
+				$this->redirect(array('controller'=>'lessons','action'=>'edit', 
+					$q['Quiz']['lesson_id']));
+			} else {
+				$this->Session->setFlash('The course test has been deleted');
+				$this->redirect(array('controller'=>'Courses','action'=>'index'));
+			}
 		} else {
 			$this->Session->setFlash('Invalid Quiz');
-			$this->redirect(array('controller'=>'lessons','action'=>'index'));
+			$this->redirect(array('controller'=>'Courses','action'=>'index'));
 		}
 		
 	}
