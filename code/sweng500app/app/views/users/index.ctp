@@ -10,6 +10,8 @@
 */
 ?>
 
+<?php $this->Html->addCrumb('Users', '/users');?>
+
 <div>
     <h2>All Users</h2>
     

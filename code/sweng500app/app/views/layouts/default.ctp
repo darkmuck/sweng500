@@ -38,6 +38,9 @@
 
         ?>
         </div>
+        <div class="breadcrumb">
+            <?php echo $this->Html->getCrumbs(' > ', 'Start');?>
+        </div>
         </div>
         <div id="content">
             <?php echo $this->Session->flash(); ?>

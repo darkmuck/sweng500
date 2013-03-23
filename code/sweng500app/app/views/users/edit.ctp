@@ -10,6 +10,9 @@
 */
 ?>
 
+<?php $this->Html->addCrumb('Users', '/users/');?>
+<?php $this->Html->addCrumb('Edit User ('. $user['User']['name'] .')', '/users/edit/'.$user['User']['id']);?>
+
 <div>
     <h2><?php echo $user['User']['name'];?> </h2>
     

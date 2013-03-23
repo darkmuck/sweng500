@@ -1,3 +1,7 @@
+
+
+<?php $this->Html->addCrumb('Login/Logout', '/users/login');?>
+
 <div>
 
     <?php

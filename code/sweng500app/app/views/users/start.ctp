@@ -1,3 +1,7 @@
+
+
+<?php $this->Html->addCrumb('Welcome!');?>
+
 <div class="users login">
 
     <h2>Welcome!</h2>

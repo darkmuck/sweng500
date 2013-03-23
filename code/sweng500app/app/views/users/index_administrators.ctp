@@ -10,6 +10,9 @@
 */
 ?>
 
+<?php $this->Html->addCrumb('Users', '/users/');?>
+<?php $this->Html->addCrumb('Administrators', '/users/index_administrators');?>
+
 <div>
     <h2>Administrators</h2>
     
