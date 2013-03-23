@@ -54,8 +54,9 @@ class AppController extends Controller {
             App::import('Model', 'User');
             $thisUser = new User;
             $thisType = $thisUser->find(array('User.id'=>$this->Auth->user('id')));
-            $thisType = $thisType['Type'][0];
-            $thisPermissions = $thisUser->Type->find(array('Type.id'=>$thisType['id']));
+            $thisType = $thisType['TypeUser'][0]['TypesUser'];
+            $this->loadModel('Type');
+            $thisPermissions = $this->Type->find(array('Type.id'=>$thisType['type_id']));
             $thisPermissions = $thisPermissions['Permission'];
             foreach($thisPermissions as $thisPermission){
                 $permissions[]=$thisPermission['permission_name'];
