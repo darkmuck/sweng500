@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-08
- * Modified: 2013-03-03 15:15
+ * Modified: 2013-03-23 11:40
  * Modified By: William DiStefano
 */
 
@@ -103,7 +103,8 @@ class UsersController extends AppController {
 	$user = $this->User->data;
 	$this->set('user', $user);
 	if (!empty($this->data)){
-		if ($this->User->save($this->data)) 
+		$this->data['TypeUser'][0]['TypesUser']['type_id'] = $this->data['User']['type_id'];
+		if ($this->User->saveAll($this->data)) 
 		{             
 			$this->Session->setFlash('User has been saved');             
 			$this->redirect(array('action' => 'index'));         
@@ -124,7 +125,8 @@ class UsersController extends AppController {
     {
     	if ($this->__checkPermission('add')); //Check permission
 	if (!empty($this->data)){
-		if ($this->User->save($this->data))
+		$this->data['TypeUser']['type_id'] = $this->data['User']['type_id'];
+		if ($this->User->saveAll($this->data))
 		{
 			$this->Session->setFlash('New user has been added');
 			$this->redirect(array('action' => 'index'));

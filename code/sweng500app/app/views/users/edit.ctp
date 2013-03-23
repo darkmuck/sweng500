@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-16
- * Modified: 2013-02-16 13:46
+ * Modified: 2013-03-23 11:50
  * Modified By: William DiStefano
 */
 ?>
@@ -16,6 +16,9 @@
     <?php 
         echo $this->Form->create('User', array('action'=>'edit'));
         echo $this->Form->hidden('id', array('value'=>$user['User']['id']));
+        echo $this->Form->hidden('TypeUser.id', array('value'=>$user['TypeUser'][0]['TypesUser']['id']));
+        echo $this->Form->hidden('TypeUser.type_id', array('value'=>$user['TypeUser'][0]['TypesUser']['type_id']));
+        echo $this->Form->hidden('TypeUser.user_id', array('value'=>$user['TypeUser'][0]['TypesUser']['user_id']));
     ?>
     <table class="table">
         <tr>
