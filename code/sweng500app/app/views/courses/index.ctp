@@ -11,6 +11,8 @@
 
 ?>
 
+<?php $this->Html->addCrumb('Courses', '/courses/index');?>
+
 <div>
     <h2>All Courses</h2>
     

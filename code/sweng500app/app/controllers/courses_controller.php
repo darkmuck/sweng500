@@ -5,7 +5,7 @@
  * File: CoursesController.php
  * Description: This controller provides request handling for courses data
  * Created: 2013-02-21
- * Modified: 2013-03-13 19:41
+ * Modified: 2013-03-23 10:04
  * Modified By: David Singer
 */
 
@@ -229,9 +229,66 @@ class CoursesController extends AppController {
 		{
 			$zipper = $zip->open('../models/datasources/' . $course_archive_number . 'archive.zip', ZipArchive::CREATE);
 			$zip->addFromString('readme.txt', 'field delimiter is "@,="');
+			
+			// Archive Course Quizzes
+			
+			$this->loadModel('Quiz');
+			$quizzes = $this->Quiz->find('all', array('conditions' => array('Quiz.course_id' => $course_archive_id)));
+		
+			foreach ($quizzes as $quiz):
+				$quiz_archive_id   = $quiz['Quiz']['id'];
+				$quiz_data   = array($quiz['Quiz']['lesson_id'],
+									 $quiz['Quiz']['course_id'],
+								 	 $quiz['Quiz']['name'],
+									 $quiz['Quiz']['created'],
+									 $quiz['Quiz']['modified']);
+				$quiz_imploded_data = implode("@,=", $quiz_data);
+				$zip->addFromString('cquiz' . $quiz_archive_id . 'course' . $course_archive_id . '.imp', $quiz_imploded_data);
+					
+				// Archive Course Questions
+					
+				$this->loadModel('Question');
+				$questions = $this->Question->find('all', array('conditions' => array('Question.quiz_id' => $quiz_archive_id)));
+		
+				foreach ($questions as $question):
+					$question_archive_id = $question['Question']['id'];
+					$quiz_archive_id     = $question['Question']['quiz_id'];
+					$question_data = array($question['Question']['type'],
+									 	   $question['Question']['points'],
+										   $question['Question']['question'],
+										   $question['Question']['created'],
+										   $question['Question']['modified']);
+					$question_imploded_data = implode("@,=", $question_data);
+					$zip->addFromString('question' . $question_archive_id . 'quiz' . $quiz_archive_id . 'course' . $course_archive_id . '.imp', $question_imploded_data);
+						
+					// Archive Course Answers
+					
+					$this->loadModel('Answer');
+					$answers = $this->Answer->find('all', array('conditions' => array('Answer.question_id' => $question_archive_id)));
+		
+					foreach ($answers as $answer):
+						$answer_archive_id   = $answer['Answer']['id'];
+						$question_archive_id = $answer['Answer']['question_id'];
+						$answer_data   = array($answer['Answer']['value'],
+										 	   $answer['Answer']['correct'],
+											   $answer['Answer']['created'],
+											   $answer['Answer']['modified']);
+						$answer_imploded_data = implode("@,=", $answer_data);
+						$zip->addFromString('zanswer' . $answer_archive_id . 'question' . $question_archive_id . 'course' . $course_archive_id . '.imp', $answer_imploded_data);
+						
+					endforeach;
+					$this->Answer->deleteAll(array('Answer.question_id' => $question_archive_id), false);	
+						
+				endforeach;
+				$this->Question->deleteAll(array('Question.quiz_id' => $quiz_archive_id), false);
+					
+			endforeach;
+			$this->Quiz->deleteAll(array('Quiz.course_id' => $course_archive_id), false);
+			
+			// Archive Lessons
 						
 			$this->loadModel('Lesson');
-			$lessons = $this->Lesson->find('all', array('conditions' => array('Lesson.course_id' => $course_archive_id)));
+			$lessons = $this->Lesson->find('all', array('conditions' => array('Lesson.course_id' => $course_archive_id)));			
 		
 			foreach ($lessons as $lesson):
 				$lesson_archive_id = $lesson['Lesson']['id'];
@@ -242,25 +299,83 @@ class CoursesController extends AppController {
 									 $lesson['Lesson']['lesson_order']);
 				$lesson_imploded_data = implode("@,=", $lesson_data);
 				$zip->addFromString('lesson' . $lesson_archive_id . 'course' . $course_archive_id . '.imp', $lesson_imploded_data);
+				
+				// Archive Lesson Contents
+			
+				$this->loadModel('LessonContent');
+				$contents = $this->LessonContent->find('all', array('conditions' => array('LessonContent.lesson_id' => $lesson_archive_id)));
+		
+				foreach ($contents as $content):
+					$content_archive_id = $content['LessonContent']['id'];
+					$lesson_archive_id  = $content['LessonContent']['lesson_id'];
+					$content_data = array($content['LessonContent']['filename'],
+									 	  $content['LessonContent']['filesize'],
+									 	  $content['LessonContent']['content'],
+									  	  $content['LessonContent']['filetype'],
+									  	  $content['LessonContent']['created'],
+									 	  $content['LessonContent']['modified']);
+					$content_imploded_data = implode("@,=", $content_data);
+					$zip->addFromString('content' . $content_archive_id . 'lesson' . $lesson_archive_id . 'course' . $course_archive_id . '.imp', $content_imploded_data);
+				endforeach;
+				$this->LessonContent->deleteAll(array('LessonContent.lesson_id' => $lesson_archive_id), false);
+				
+				// Archive Lesson Quizzes
+			
+				$this->loadModel('Quiz');
+				$quizzes = $this->Quiz->find('all', array('conditions' => array('Quiz.lesson_id' => $lesson_archive_id)));
+		
+				foreach ($quizzes as $quiz):
+					$quiz_archive_id   = $quiz['Quiz']['id'];
+					$lesson_archive_id = $quiz['Quiz']['lesson_id'];
+					$quiz_data   = array($quiz['Quiz']['course_id'],
+									 	 $quiz['Quiz']['name'],
+										 $quiz['Quiz']['created'],
+										 $quiz['Quiz']['modified']);
+					$quiz_imploded_data = implode("@,=", $quiz_data);
+					$zip->addFromString('lquiz' . $quiz_archive_id . 'lesson' . $lesson_archive_id . 'course' . $course_archive_id . '.imp', $quiz_imploded_data);
+					
+					// Archive Lesson Questions
+					
+					$this->loadModel('Question');
+					$questions = $this->Question->find('all', array('conditions' => array('Question.quiz_id' => $quiz_archive_id)));
+		
+					foreach ($questions as $question):
+						$question_archive_id = $question['Question']['id'];
+						$quiz_archive_id     = $question['Question']['quiz_id'];
+						$question_data = array($question['Question']['type'],
+										 	   $question['Question']['points'],
+											   $question['Question']['question'],
+											   $question['Question']['created'],
+											   $question['Question']['modified']);
+						$question_imploded_data = implode("@,=", $question_data);
+						$zip->addFromString('question' . $question_archive_id . 'quiz' . $quiz_archive_id . 'course' . $course_archive_id . '.imp', $question_imploded_data);
+						
+						// Archive Lesson Answers
+					
+						$this->loadModel('Answer');
+						$answers = $this->Answer->find('all', array('conditions' => array('Answer.question_id' => $question_archive_id)));
+		
+						foreach ($answers as $answer):
+							$answer_archive_id   = $answer['Answer']['id'];
+							$question_archive_id = $answer['Answer']['question_id'];
+							$answer_data   = array($answer['Answer']['value'],
+											 	   $answer['Answer']['correct'],
+												   $answer['Answer']['created'],
+												   $answer['Answer']['modified']);
+							$answer_imploded_data = implode("@,=", $answer_data);
+							$zip->addFromString('zanswer' . $answer_archive_id . 'question' . $question_archive_id . 'course' . $course_archive_id . '.imp', $answer_imploded_data);
+						
+						endforeach;
+						$this->Answer->deleteAll(array('Answer.question_id' => $question_archive_id), false);	
+						
+					endforeach;
+					$this->Question->deleteAll(array('Question.quiz_id' => $quiz_archive_id), false);
+					
+				endforeach;
+				$this->Quiz->deleteAll(array('Quiz.lesson_id' => $lesson_archive_id), false);
+				
 			endforeach;
 			$this->Lesson->deleteAll(array('Lesson.course_id' => $course_archive_id), false);
-			
-			$this->loadModel('LessonContent');
-			$contents = $this->LessonContent->find('all', array('conditions' => array('LessonContent.lesson_id' => $lesson_archive_id)));
-		
-			foreach ($contents as $content):
-				$content_archive_id = $content['LessonContent']['id'];
-				$lesson_archive_id = $content['LessonContent']['lesson_id'];
-				$content_data = array($content['LessonContent']['filename'],
-									  $content['LessonContent']['filesize'],
-									  $content['LessonContent']['content'],
-									  $content['LessonContent']['filetype'],
-									  $content['LessonContent']['created'],
-									  $content['LessonContent']['modified']);
-				$content_imploded_data = implode("@,=", $content_data);
-				$zip->addFromString('content' . $content_archive_id . 'lesson' . $lesson_archive_id . 'course' . $course_archive_id . '.imp', $content_imploded_data);
-			endforeach;
-			$this->LessonContent->deleteAll(array('LessonContent.lesson_id' => $lesson_archive_id), false);
 			
 			$zip->close();
 	
@@ -306,7 +421,7 @@ class CoursesController extends AppController {
 							
 				switch ($contenttype) 
 				{
-    				case 'cont': //lessoncontent
+    				case 'cont': //Extract Lesson Contents
 					
 						$content_pos = 0;
 						$lesson_pos = strpos($eachfile, 'lesson');
@@ -333,7 +448,7 @@ class CoursesController extends AppController {
 						unlink("$extractDir/$eachfile");
         			break;
 					
-    				case 'less': //lesson
+    				case 'less': //Extract Lessons
 					
 						$lesson_pos = 0;
 						$course_pos = strpos($eachfile, 'course');
@@ -357,12 +472,113 @@ class CoursesController extends AppController {
 						unlink("$extractDir/$eachfile");
 					break;
 					
-					case '.': break;
+					case 'lqui': // Extract Lesson Quizzes
 					
-					case '..': break;
+						$lquiz_pos = 0;
+						$lesson_pos = strpos($eachfile, 'lesson');
+						$course_pos = strpos($eachfile, 'course');
+						$lquiz_num = substr($eachfile, ($lquiz_pos + 5), ($lesson_pos - ($lquiz_pos + 5)));
+						$lesson_num = substr($eachfile, ($lesson_pos + 6), ($course_pos - ($lesson_pos + 6)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('Quiz');
+						$this->Quiz->read();
+						
+						$this->Quiz->set('id', $lquiz_num);
+						$this->Quiz->set('lesson_id', $lesson_num);
+						$this->Quiz->set('course_id', $content_data[0]);
+						$this->Quiz->set('name', $content_data[1]);
+						$this->Quiz->set('created', $content_data[2]);
+						$this->Quiz->set('modified', $content_data[3]);
+												
+        				$this->Quiz->save();
+						
+						unlink("$extractDir/$eachfile");
+					break;
+					
+					case 'cqui': // Extract Course Quizzes
+					
+						$cquiz_pos = 0;
+						$course_pos = strpos($eachfile, 'course');
+						$cquiz_num = substr($eachfile, ($cquiz_pos + 5), ($course_pos - ($cquiz_pos + 5)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('Quiz');
+						$this->Quiz->read();
+						
+						$this->Quiz->set('id', $cquiz_num);
+						$this->Quiz->set('lesson_id', $content_data[0]);
+						$this->Quiz->set('course_id', $content_data[1]);
+						$this->Quiz->set('name', $content_data[2]);
+						$this->Quiz->set('created', $content_data[3]);
+						$this->Quiz->set('modified', $content_data[4]);
+												
+        				$this->Quiz->save();
+						
+						unlink("$extractDir/$eachfile");
+					
+					break;
+					
+					case 'ques': // Extract Questions
+					
+						$question_pos = 0;
+						$quiz_pos = strpos($eachfile, 'quiz');
+						$course_pos = strpos($eachfile, 'course');
+						$question_num = substr($eachfile, ($question_pos + 8), ($quiz_pos - ($question_pos + 8)));
+						$quiz_num = substr($eachfile, ($quiz_pos + 4), ($course_pos - ($quiz_pos + 4)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('Question');
+						$this->Question->read();
+						
+						$this->Question->set('id', $question_num);
+						$this->Question->set('quiz_id', $quiz_num);
+						$this->Question->set('type', $content_data[0]);
+						$this->Question->set('points', $content_data[1]);
+						$this->Question->set('question', $content_data[2]);
+						$this->Question->set('created', $content_data[3]);
+						$this->Question->set('modified', $content_data[4]);
+												
+        				$this->Question->save();
+						
+						unlink("$extractDir/$eachfile");					
+					break;
+					
+					case 'zans': // Extract Answers
+					
+						$answer_pos = 0;
+						$question_pos = strpos($eachfile, 'question');
+						$course_pos = strpos($eachfile, 'course');
+						$answer_num = substr($eachfile, ($answer_pos + 6), ($question_pos - ($answer_pos + 6)));
+						$question_num = substr($eachfile, ($question_pos + 8), ($course_pos - ($question_pos + 8)));
+						$content_stream = file_get_contents("$extractDir/$eachfile");
+						$content_data = explode('@,=', $content_stream);
+						
+						$this->loadModel('Answer');
+						$this->Answer->read();
+						
+						$this->Answer->set('id', $answer_num);
+						$this->Answer->set('question_id', $question_num);
+						$this->Answer->set('value', $content_data[0]);
+						$this->Answer->set('correct', $content_data[1]);
+						$this->Answer->set('created', $content_data[2]);
+						$this->Answer->set('modified', $content_data[3]);
+												
+        				$this->Answer->save();
+						
+						unlink("$extractDir/$eachfile");
+					
+					break;
+					
+					case '.': break; // Do nothing to current directory
+					
+					case '..': break; // Do nothing to the parent directory
 					
 					default:
-					unlink("$extractDir/$eachfile");
+					unlink("$extractDir/$eachfile"); // Delete unessential files
 					break;
 				}
 			}

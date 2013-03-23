@@ -10,8 +10,11 @@
 */
 ?>
 
+<?php $this->Html->addCrumb('Courses', '/courses/index');?>
+<?php $this->Html->addCrumb('Active Courses', '/courses/index_current');?>
+
 <div>
-    <h2>Current Courses</h2>
+    <h2>Active Courses</h2>
     
     <?php
     	if($Auth['User']['type_id'] == 1) {

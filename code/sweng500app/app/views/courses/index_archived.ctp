@@ -10,6 +10,9 @@
 */
 ?>
 
+<?php $this->Html->addCrumb('Courses', '/courses/index');?>
+<?php $this->Html->addCrumb('Archived Courses', '/courses/index_archived');?>
+
 <div>
     <h2>Archived Courses</h2>
     
