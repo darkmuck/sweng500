@@ -16,7 +16,7 @@ class AppController extends Controller {
     
     function beforeFilter() {
         $this->Auth->fields=array('username'=>'username','password'=>'password');
-        $this->Auth->allow(array('logout','start','login'));
+        $this->Auth->allow(array('logout','start','login','register'));
         $this->Auth->loginAction=array('controller'=>'users','action'=>'login');
         $this->Auth->loginRedirect=array('controller' => 'users', 'action' => 'start');
         $this->Auth->logoutAction=array('controller' => 'users', 'action' => 'logout');

@@ -27,12 +27,13 @@
             echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
             if ($this->Session->check('Auth.User') == 0) {
                 echo '<li>'. $this->Html->link('Login', array('controller'=>'Users','action'=>'login')) .'</li>';
+                echo '<li>'. $this->Html->link('Register', array('controller'=>'Users','action'=>'register')) .'</li>';
             } else {
                 echo '<li>'. $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout')) .'</li>';
             }
-			echo '<li>'. $this->Html->link('About', array('controller'=>'About','action'=>'index')) .'</li>';
-			echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'ContactUs','action'=>'index')) .'</li>';
-			echo '<li>'. $this->Html->link('Help', array('controller'=>'Help','action'=>'index')) .'</li>';
+	    echo '<li>'. $this->Html->link('About', array('controller'=>'Users','action'=>'about')) .'</li>';
+	    echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'Users','action'=>'contactus')) .'</li>';
+	    echo '<li>'. $this->Html->link('Help', array('controller'=>'users','action'=>'help')) .'</li>';
             
 
 

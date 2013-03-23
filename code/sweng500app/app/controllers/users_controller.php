@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-08
- * Modified: 2013-03-23 11:40
+ * Modified: 2013-03-23 17:48
  * Modified By: William DiStefano
 */
 
@@ -38,9 +38,14 @@ class UsersController extends AppController {
     		    case 'delete':
     		    	     if ($type == '1') $allow = true; //Allow Administrator
     		    	    break;
+    		    case 'register':
+    		    	    $allow = false; //Don't allow a logged in user to access this
+    		    	    break;
     		    default:
     		    	    $allow = false; //Deny
     		}
+    	} elseif ($action == 'register') {
+    		$allow = true; //Allow non-logged persons to access
     	}
     	
     	if ($allow == true) {
@@ -132,6 +137,21 @@ class UsersController extends AppController {
 			$this->redirect(array('action' => 'index'));
 		} else {
 			$this->Session->setFlash('Error: New user has not been added');
+		}
+	}
+    }
+   
+    function register () 
+    {
+    	if ($this->__checkPermission('register')); //Check permission
+	if (!empty($this->data)){
+		$this->data['TypeUser']['type_id'] = $this->data['User']['type_id'];
+		if ($this->User->saveAll($this->data))
+		{
+			$this->Session->setFlash('Your account has been created');
+			$this->redirect(array('action' => 'start'));
+		} else {
+			$this->Session->setFlash('Error: Unable to create new account');
 		}
 	}
     }
