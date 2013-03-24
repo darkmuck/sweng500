@@ -39,7 +39,21 @@
         <td><?php echo $course['Course']['id']; ?></td>
         <td><?php echo $course['Course']['course_number']; ?></td>
         <td><?php echo $course['Course']['course_name']; ?></td>
-		<td><?php echo $course['Course']['course_status']; ?></td>		
+		<td><?php 
+                switch ($course['Course']['course_status']) {
+                    case 'C':
+                    	    echo 'Active';
+                    	    break;
+                    case 'A':
+                    	    echo 'Archived';
+                    	    break;
+                    case 'U':
+                    	    echo 'Under Development';
+                    	    break;
+                    default:
+                    	    echo '-';
+                }
+            ?></td>		
         <td>
             <?php 
             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('action'=>'view',$course['Course']['id']))."'", 'class'=>'btn btn-info'));

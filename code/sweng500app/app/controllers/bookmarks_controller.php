@@ -17,18 +17,20 @@ var $name = 'Bookmarks';
 
 public function index($id=null) {
 
-       $this->Bookmark->Lesson->paginate =  array('conditions' => array(
-			'Bookmark.user_id' => $this->Auth->user('id'),
-     		'Lesson.course_id' => $id,
-          	'Bookmark.bookmark_type' => 'user',
-        	'Lesson' => array(
-         	'limit' => 10, null, 
-        	'order' => array('Lesson.lesson_order' => 'desc')),
-       ));
+		$this->paginate = array(
+			'Bookmark' => array(
+         			'limit' => 10, null, 
+        			'order' => array('Lesson.lesson_order' => 'asc')
+			));
 
-          $bookmark = $this->paginate('Bookmark');
-          $this->set('bookmark', $bookmark);
-          
+       		$bookmark = $this->paginate('Bookmark', array(
+					'Lesson.course_id' => $id, 
+					'Bookmark.user_id' => $this->Auth->user('id'),
+					'Bookmark.bookmark_type' => 'user'
+					)
+		);
+
+		$this->set('bookmark', $bookmark);               
                
 }
 
@@ -43,7 +45,7 @@ function delete($id) {
  
   $this->Bookmark->delete($id);
   $this->Session->setFlash('Bookmark has been deleted!');
-  $this->redirect(array('action'=>'./index'));
+  $this->redirect($this->referer());
 }
 
 function add($id = null) {

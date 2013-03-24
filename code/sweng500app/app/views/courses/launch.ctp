@@ -37,13 +37,18 @@
 
     <tr>
         <td><?php echo $this->Html->link($lesson['Lesson']['name'], array('controller'=>'lessons', 'action'=>'view',$lesson['Lesson']['id'])); ?></td>
-        <td><?php echo "Status here";?></td>
-         <td> <?php echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'lessons', 'action'=>'view',$lesson['Lesson']['id']))."'", 'class'=>'btn btn-info')); ?></td>
+        <td><?php if($lesson['LessonStatus']){
+                                echo 'Complete';}
+                            else {
+                                      echo 'Incomplete';}?></td>
+         <td><?php echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'lessons', 'action'=>'view',$lesson['Lesson']['id']))."'", 'class'=>'btn btn-info')); ?></td>
     </tr>
     <?php  endforeach; ?>
     <tr><td><br/></td><td><br/></td><td><br/></td></tr>
     <tr><td class="bold">Course Status</td>
-    <td class="bold"><?php echo $roster_course['Roster']['completion_status']; ?></td><td></td>
+    <td class="bold"><?php echo $roster_course['Roster']['completion_status']; ?></td>
+    <td><?php if(($status == 'Complete') && ($roster_course['Roster']['completion_status'] == 'Incomplete')) {
+	echo $this->Html->link('Complete This Course', array('controller'=>'rosters', 'action'=>'complete',$roster_course['Roster']['id'])); }?></td>
 </table>
 
     <div align="center" width="100%">

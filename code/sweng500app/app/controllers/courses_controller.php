@@ -15,12 +15,16 @@ class CoursesController extends AppController {
 	var $uses = array('Course','Lesson');
 	
 	 function index() {
-        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
 
-        $courses = $this->paginate('Course');
-        
+	$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+	if (($this->Auth->user('type_id')) ==3) {  //Student 	
+      		$courses = $this->paginate('Course', array('Course.course_status' => 'C')); }
+                   else{
+	$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+        	$courses = $this->paginate('Course');}
     	$this->loadModel('User');
     	$users = $this->Course->User->find('list', array('fields' => array('name')));
+
     	$this->set(compact('users', 'courses'));
 		if (($this->Auth->user('type_id')) ==3)   //Student (not Admin or Instructor)
       	{
@@ -130,34 +134,20 @@ class CoursesController extends AppController {
 
 	function launch($id = null) {
                    
-		$record = $this->Course->Roster->find('first', array(
-                'fields' => 'id',
-             	'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
-                    'Roster.course_id' => $id)
-		));
-
-        if($record) {
- 			$this->Course->Roster->id = $record['Roster']['id']; 
-            $this->Course->Roster->saveField("completion_status", "Incomplete");  
-        } else { 
-			$this->Course->Roster->create();
-            $this->Course->Roster->set(array(
-              		 'course_id' => $id,                   
-               	 	 'user_id' => $this->Auth->user('id'),
-          	     	 'completion_status' => 'Incomplete'
-			));
-			
-     		if ($this->Course->Roster->validates()) {
-           		$this->Course->Roster->save($this->data);
-     		} else  {
-        		$errors = $this->Course->Roster->invalidFields();
-        		$this->Session->setFlash(implode(',', $errors));
-      		}
-        }
 		
-		$this->paginate = array('Lesson' => array('conditions'=> array('Lesson.course_id = ' => $id),
-			'limit' => 10, null, 'order' => array('Lesson.lesson_order' => 'asc')));
+		$this->Lesson->recursive= 1;
+		$this->paginate = array(
+			'Lesson' => array(
+   			 'conditions' => array('Lesson.course_id' => $id),
+   			 'fields' => array('Lesson.id', 'Lesson.name')
+			),
+			'LessonStatus' => array(
+   			 'conditions' => array('Lesson.id' => 'LessonStatus.lesson_id'),
+    			'fields' => array('LessonStatus.status')
+			)
+		);
 		$lessons = $this->paginate('Lesson');
+/*die(debug($lessons));*/
 		$this->set('lessons', $lessons);
 
       	$roster_course = $this->Course->Roster->find('first', array(
@@ -171,7 +161,33 @@ class CoursesController extends AppController {
 		$this->set('course', $course);
 
 
-	}
+	$this->Lesson->unbindModel(array(
+		'belongsTo' => array('Lesson')));
+	$this->Lesson->bindModel(array(
+    		'hasOne' => array(
+     			 'LessonStatus' => array(
+         			'foreignKey' => false,
+         			'conditions' => array('LessonStatus.lesson_id = Lesson.id')
+       				)
+			)
+	));
+	$this->Lesson->recursive= 1;
+	$count_complete=$this->Lesson->find('count', array(
+  			 'conditions' => array(
+                                       	 'Lesson.course_id' => $id,
+                                      	 'LessonStatus.user_id' => $this->Auth->user('id')
+                              		 ),                               
+  			 'contain' => array('Lesson', 'LessonStatus')
+	));
+
+	$count_lessons = $this->Lesson->find('count', array(
+  		 'conditions' => array('Lesson.course_id' => $id)
+	));
+	if($count_complete - $count_lessons == 0) {
+ 	$status = 'Complete';}
+	else{ $status = 'Incomplete';}
+      	$this->set('status', $status);
+}
 
 	function edit($id = null) 
     {

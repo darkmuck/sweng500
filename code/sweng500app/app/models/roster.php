@@ -21,11 +21,12 @@ class Roster extends AppModel {
 		"course_id"=>array( 
 			"unique"=>array( 
 				"rule"=>array("checkUnique", array("course_id", "user_id")),
-				"message"=>"Course NOT added.  Already in roster!" 
+				"message"=>"Course NOT added.  Already in roster!",
+				"last" => true
 			), 
 			"prereqComplete" => array(
 				"rule" => array("isEligible", array("course_id", "user_id")),   
-				"message" => "Prerequisites have not been met. Course NOT added!"
+				"message" => "Prerequisites have not been met. Request failed!"
 			)
 		)
 	); 

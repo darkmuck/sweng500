@@ -55,6 +55,13 @@ function delete($id) {
   $this->redirect(array('action'=>'./index'));
 }
 
+function complete($id) {
+
+  $this->Roster->id = $id;  
+  $this->Roster->saveField("completion_status", "Complete"); 
+  $this->redirect($this->referer());
+}
+
 
 }
 ?>	
