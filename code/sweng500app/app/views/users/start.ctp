@@ -2,7 +2,7 @@
 
 <?php $this->Html->addCrumb('Welcome!');?>
 
-<div class="users login">
+<div class="users start">
 
     <h2>Welcome to the Team 3 eLearning System!</h2>
 

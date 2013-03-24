@@ -13,9 +13,25 @@ class UsersController extends AppController {
 
     var $name = 'Users';
     
-    function start($layout = false) {
+    function start()
+    {
     	
-        //user start page
+        //empty
+    }    
+    
+    function about() 
+    {
+        //empty
+    }
+    
+    function contactus() 
+    {
+        //empty
+    }
+    
+    function help() 
+    {
+        //empty
     }
     
     function __checkPermission($action) {
@@ -57,7 +73,7 @@ class UsersController extends AppController {
     	}
     }
 
-    function index($layout = false) {
+    function index() {
     	if ($this->__checkPermission('index')); //Check permission
     	
     	
@@ -68,7 +84,7 @@ class UsersController extends AppController {
         $this->set('users', $users);
     }
     
-    function indexStudents($layout = false) {
+    function indexStudents() {
     	if ($this->__checkPermission('index')); //Check permission
     	
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
@@ -78,7 +94,7 @@ class UsersController extends AppController {
         $this->set('users', $users);
     }
     
-    function indexInstructors($layout = false) {
+    function indexInstructors() {
     	if ($this->__checkPermission('index')); //Check permission
     	
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
@@ -88,7 +104,7 @@ class UsersController extends AppController {
         $this->set('users', $users);
     }
     
-    function indexAdministrators($layout = false) {
+    function indexAdministrators() {
     	if ($this->__checkPermission('index')); //Check permission
     	
         $this->paginate = array('User' => array('limit' => 10, null, 'order' => array('User.last_name' => 'asc')));
@@ -98,7 +114,7 @@ class UsersController extends AppController {
         $this->set('users', $users);
     }
     
-    function view($id = null, $layout = false) {
+    function view($id = null) {
     	if ($this->__checkPermission('view')); //Check permission
     	
 	$this->User->id = $id;
@@ -106,7 +122,7 @@ class UsersController extends AppController {
 	$this->set('user', $user);
     }
     
-    function edit($id = null, $layout = false) 
+    function edit($id = null) 
     {
     	if ($this->__checkPermission('edit')); //Check permission
     	
@@ -126,7 +142,7 @@ class UsersController extends AppController {
 	}
     }
     
-    function delete($id = null, $layout = false) {
+    function delete($id = null) {
     	if ($this->__checkPermission('delete')); //Check permission
     	
 	$this->User->delete($id);
@@ -134,7 +150,7 @@ class UsersController extends AppController {
 	$this->redirect(array('action'=>'index'));
     }
     
-    function add ($layout = false) 
+    function add () 
     {
     	if ($this->__checkPermission('add')); //Check permission
     	
@@ -150,7 +166,7 @@ class UsersController extends AppController {
 	}
     }
    
-    function register ($layout = false) 
+    function register () 
     {
     	if ($this->__checkPermission('register')); //Check permission
     	
@@ -166,7 +182,7 @@ class UsersController extends AppController {
 	}
     }
     
-    function login($layout = false) {
+    function login() {
     	
         if (!empty($this->data)) {
             $user = $this->User->find('first',
