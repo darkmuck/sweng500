@@ -1,0 +1,18 @@
+body {
+    padding-top: 5px;
+    padding-bottom: 0px;
+    height:100%;
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+/* Negative indent footer by it's height */
+    margin: 0 auto -60px;
+}
+
+.header, .navbar, .breadcrumb, #push, #footer {
+    display:none;
+}

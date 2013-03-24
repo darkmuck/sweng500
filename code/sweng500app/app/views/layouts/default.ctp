@@ -6,12 +6,14 @@
     <?php echo $this->Html->meta('icon'); ?>
     <?php
         echo $this->Html->script(array('jquery-1.9.1.min.js','bootstrap.min.js', 'tiny_mce/jquery.tinymce.js'));
-        echo $this->Html->css(array('bootstrap','stylesheet-custom'));
         echo $scripts_for_layout;
     ?>
+    <link rel="stylesheet" type="text/css" href="/sweng500app/css/stylesheet-custom.css" id="stylesheet-custom" />
+    <link rel="stylesheet" type="text/css" href="/sweng500app/css/bootstrap.css" id="stylesheet-bootstrap" />
 
 </head>
 <body>
+  <a name="top"/>
   <div class="wrap">
     <div class="container">
         <div class="header">
@@ -34,14 +36,17 @@
 	    echo '<li>'. $this->Html->link('About', array('controller'=>'Users','action'=>'about')) .'</li>';
 	    echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'Users','action'=>'contactus')) .'</li>';
 	    echo '<li>'. $this->Html->link('Help', array('controller'=>'users','action'=>'help')) .'</li>';
-            
-
-
         ?>
         </div>
         <div class="breadcrumb">
             <?php echo $this->Html->getCrumbs(' > ', 'Start');?>
         </div>
+              <?php 
+	          echo $this->Html->link($this->Html->image('icon-printer.jpg', array('height'=>'25','width'=>'25','style'=>'float:right;')), 
+		  '#top', array('escape'=>false,'onClick'=>
+		  "document.getElementById('stylesheet-custom').href='/sweng500app/css/print.css';document.getElementById('stylesheet-bootstrap').href=''")
+		  );
+	      ?>
         </div>
         <div id="content">
             <?php echo $this->Session->flash(); ?>

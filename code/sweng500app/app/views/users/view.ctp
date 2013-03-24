@@ -14,6 +14,7 @@
 <?php $this->Html->addCrumb('View User ('. $user['User']['name'] .')', '/users/view/'. $user['User']['id']);?>
 
 <div>
+
     <h2><?php echo $user['User']['name'];?> </h2>
     
     <b>Name:</b> <?php echo $user['User']['name'] ?><br />
