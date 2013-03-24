@@ -50,6 +50,10 @@ class User extends AppModel {
 			'usernameValidChar' => array(
 				'rule' => 'alphaNumeric',  
 				'message' => 'Only alpha numeric characters may be used.'
+			),
+			'usernameIsUnique' => array(
+				'rule' => 'isUnique',
+				'message' => 'This username has has been taken already.'
 			)
 		),
 		'first_name' => array(
