@@ -17,6 +17,7 @@ class TestUserController extends UsersController {
 	var $name = 'Users';
  
     var $autoRender = false;
+    var $redirectUrl = '';
  
     function redirect($url, $status = null, $exit = true) {
         $this->redirectUrl = $url;
@@ -43,12 +44,24 @@ class UserControllerTest extends CakeTestCase {
 		'middle_name' => '2',
 		'last_name' => 'Second',
 		'type_id' => 1);
+		
+	public $runAs = array('id' => 1,
+		'username' => 'tester',
+		'password' => 'b96689421b87d4c93f377eba19b8eb97807e2656',
+		'first_name' => 'test',
+		'middle_name' => 'as',
+		'last_name' => 'root',
+		'type_id' => 1,
+		'enabled' => 1
+		);
 	
 	
 	function startTest() {
 		$this->TestUserController = new TestUserController();
 		$this->TestUserController->constructClasses();
 		$this->TestUserController->Component->initialize($this->TestUserController);
+		
+		debug($this->TestUserController->Auth->login($this->runAs));
 	}
 	
 	function endTest() {
@@ -84,7 +97,7 @@ class UserControllerTest extends CakeTestCase {
 	    $this->TestUserController->login();
 	    
 	    //assert the url
-	    $this->assertEqual($this->TestUserController->redirectUrl, array('action' => 'start'));
+	    $this->assertEqual(array('action' => 'start'), $this->TestUserController->redirectUrl);
 	}
 	
 	function testLogout() {
@@ -150,12 +163,18 @@ class UserControllerTest extends CakeTestCase {
 	
 	
 	function testAdd() {
-		$this->TestUserController->data = array('User' => $this->debugUser);
-		
+		$this->TestUserController->data = array('User' => $this->debugUser,
+			'TypeUser' => array('type_id' => 1));
+		debug($this->TestUserController->data);
 		$this->TestUserController->params = Router::parse('/Users/add');
 		$this->TestUserController->beforeFilter();
 		
 		$this->TestUserController->add();
+		
+		$this->TestUserController->User->id = -1;
+
+		$user = $this->TestUserController->User->read();
+		debug($user);
 
 		$this->assertEqual($this->TestUserController->redirectUrl, array('action'=> 'index'));
 	}
