@@ -11,11 +11,52 @@
 
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson');
+	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course');
+	
+	private function __checkPermissions($action, $quiz) {
+		$allow = false;
+		$type = $this->Auth->user('type_id');
+		
+		$courseId = $quiz['Quiz']['course_id'];
+		if(!$courseId) {
+			$this->Lesson->id = $quiz['Quiz']['lesson_id'];
+			$courseId = $this->Lesson->field('course_id');
+		}
+		
+		$course = $this->Course->find('first', array('conditions' => 
+			array ('Course.id' => $courseId)));
+		
+		switch($action) {
+			case 'take':
+				foreach($course['Roster'] as $roster) {
+					if(!$allow && $roster['user_id'] == $this->Auth->user('id')) {
+						$allow = true;
+					}
+				}
+				break;
+			case 'results':
+				foreach($course['Roster'] as $roster) {
+					if(!$allow && $roster['user_id'] == $this->Auth->user('id')) {
+						$allow = true;
+					}
+				}
+				$allow = $allow || ($this->Auth->user('id') == $course['Course']['id']);
+				break;
+			default:
+				$allow = false;
+		}
+		
+		if(!$allow) {
+			$this->Session->setFlash('You do not have permissions to view this page.');
+			$this->redirect(array('controller'=>'Users','action'=>'start'));
+		}
+	}
 	
 	function take_quiz($quizId = null) {
 		$this->Quiz->Behaviors->attach('Containable'); //helps prevent retrieving the related data
 		$quiz = $this->Quiz->find('first', array('conditions' => array('id' => $quizId),'contain'=> false));
+		
+		$this->__checkPermissions('take', $quiz);
 		
 		if (empty($quiz)) {
 			$this->Session->setFlash('Invalid Quiz');
@@ -40,14 +81,17 @@ class QuizSubmissionsController extends AppController {
 	
 	function results($quizId = null, $userId = null) {
 		if(!empty($quizId) && !empty($userId)) {
+			$quiz = $this->Quiz->find('first', array('conditions' => array('Quiz.id' => $quizId), 
+				'contain' => false));
+			$this->__checkPermissions('results', $quiz);
+			
 			$quizsub = $this->QuizSubmission->find('all', 
 				array('conditions'=> array('QuizSubmission.quiz_id' => $quizId, 
 					'QuizSubmission.user_id' => $userId),
 					'contain' => false)
 	 		);
 	 		
-	 		$quiz = $this->Quiz->find('first', array('conditions' => array('Quiz.id' => $quizId), 
-				'contain' => false));
+	 		
 	 		$quizResult = $this->QuizGrader->grade($quiz, $quizsub);
 	 		
 	 		$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
@@ -76,7 +120,8 @@ class QuizSubmissionsController extends AppController {
 	 			$this->redirect(array('controller'=>'Lessons', 'action' => 'view', $lesson['Lesson']['id']));
 	 		}
 		} else {
-			//error case
+			$this->Session->setFlash('Invalid parameters entered.');
+			$this->redirect(array('controller'=>'Users','action'=>'start'));
 		}
 	}
 	

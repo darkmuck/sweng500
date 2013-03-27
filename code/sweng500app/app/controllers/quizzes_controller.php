@@ -11,11 +11,36 @@
 
 class QuizzesController extends AppController {
 	var $name = 'Quizzes';
-	var $uses = array('Quiz', 'Question', 'Answer', 'Lesson');
+	var $uses = array('Quiz', 'Question', 'Answer', 'Lesson', 'Course');
+	
+	function __checkPermissions($lessonId, $courseId) {
+		$allow = $this->Auth->user('type_id') == 2;
+		if($allow && !empty($lessonId)) {
+			$this->Lesson->id = $lessonId;
+			$courseId = $this->Lesson->field('course_id');
+			$course = $this->Course->findById($courseId);
+			$allow &= $this->Auth->user('id') == $course['Course']['user_id'];
+			
+		} else if($allow && !empty($courseId)) {
+			$course = $this->Course->findById($courseId);
+			$allow &= $this->Auth->user('id') == $course['Course']['user_id'];
+		}
+		
+		if(!$allow) {
+			$this->Session->setFlash('You do not have permission for this page.');
+			$this->redirect(array('controller' => 'Users', 'action' => 'start'));
+		}
+	}
 	
 	function index() {}
 	
 	function add($type = 'Lesson', $id = null) {
+		if($type == 'Lesson') {
+			$this->__checkPermissions($id, null);
+		} else {
+			$this->__checkPermissions(null, $id);
+		}
+		
 
 		if(!empty($this->data)) {
 			$this->Quiz->save($this->data);
@@ -55,6 +80,12 @@ class QuizzesController extends AppController {
 	
 	function edit($quizId = null) {
 		if(!empty($this->data)) {
+			if(!empty($this->data['Quiz']['lesson_id'])) {
+				$this->__checkPermissions($this->data['Quiz']['lesson_id'], null);
+			} else {
+				$this->__checkPermissions(null, $this->data['Quiz']['course_id']);
+			}
+			
 			$this->Quiz->save($this->data);
 			$quizId = $this->data['Quiz']['id'];
 			$this->Question->deleteAll(array('Question.quiz_id' => $quizId), true);
@@ -80,6 +111,7 @@ class QuizzesController extends AppController {
 			}
 		} else {
 			$quiz = $this->Quiz->findById($quizId);
+			$this->__checkPermissions($quiz['Quiz']['lesson_id'], $quiz['Quiz']['course_id']);
 			if(!empty($quiz['Quiz']['lesson_id'])) {
 				$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
 				$this->data['Lesson']['name'] = $lesson['Lesson']['name'];
@@ -103,6 +135,7 @@ class QuizzesController extends AppController {
 	function delete($id = null) {
 		if(!empty($id)) {
 			$q = $this->Quiz->findById($id);
+			$this->__checkPermissions($q['Quiz']['lesson_id'], $q['Quiz']['course_id']);
 			$this->Quiz->delete($id);
 			if(!empty($q['Quiz']['lesson_id'])) {
 				$this->Session->setFlash('The quiz has been deleted');
