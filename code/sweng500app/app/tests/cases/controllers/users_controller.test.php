@@ -61,7 +61,7 @@ class UserControllerTest extends CakeTestCase {
 		$this->TestUserController->constructClasses();
 		$this->TestUserController->Component->initialize($this->TestUserController);
 		
-		debug($this->TestUserController->Auth->login($this->runAs));
+		// debug($this->TestUserController->Auth->login($this->runAs));
 	}
 	
 	function endTest() {
@@ -165,7 +165,7 @@ class UserControllerTest extends CakeTestCase {
 	function testAdd() {
 		$this->TestUserController->data = array('User' => $this->debugUser,
 			'TypeUser' => array('type_id' => 1));
-		debug($this->TestUserController->data);
+		// debug($this->TestUserController->data);
 		$this->TestUserController->params = Router::parse('/Users/add');
 		$this->TestUserController->beforeFilter();
 		
@@ -174,7 +174,7 @@ class UserControllerTest extends CakeTestCase {
 		$this->TestUserController->User->id = -1;
 
 		$user = $this->TestUserController->User->read();
-		debug($user);
+		// debug($user);
 
 		$this->assertEqual($this->TestUserController->redirectUrl, array('action'=> 'index'));
 	}
@@ -223,6 +223,11 @@ class UserControllerTest extends CakeTestCase {
 		
 	}
 	
+	function testAbout() {
+	
+		$this->assertTrue(file_exists('../views/users/about.ctp'));
+		
+	}
 	
 }
 ?>
