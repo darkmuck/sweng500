@@ -92,7 +92,12 @@ class LessonsController extends AppController {
 		$lesson = $this->Lesson->data;
 		$this->set('lesson', $lesson);
 
-		$this->__checkPermissions($lesson['Lesson']['course_id']);
+		if(!empty($lesson)) {
+			$this->__checkPermissions($lesson['Lesson']['course_id']);
+		} else  {
+			$this->__checkPermissions($this->data['Lesson']['course_id']);
+		}
+		
 		
 		$this->loadModel('Course');
 		$this->Course->id = $this->data['Lesson']['course_id'];
