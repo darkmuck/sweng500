@@ -9,6 +9,9 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php $this->Html->addCrumb('Roster', '/Rosters/');?>
+<?php $this->Html->addCrumb($lesson['Course']['course_name'], '/Courses/launch/'. $lesson['Lesson']['course_id']);?>
+
 <head><style>
 .color {  color: #6699CC;}
 .right {   float:right;}
@@ -85,10 +88,5 @@
   	endif;
   ?>
 	<hr />
-  <p class="right"> <?php
-  	if($isStudent && sizeof($lesson['Quiz']) == sizeOf($completedQuizzes)) {
- 		echo $this->Html->link('Complete Lesson', 
- 			array('controller' => 'lesson_statuses', 'action'=> 'add', $lesson['Lesson']['id']));
-  	} 
-    ?></p>
+
 </div>
