@@ -229,5 +229,11 @@ class UserControllerTest extends CakeTestCase {
 		
 	}
 	
+	function testContactUs() {
+	
+		$this->assertTrue(file_exists('../views/users/contactus.ctp'));
+		
+	}
+	
 }
 ?>

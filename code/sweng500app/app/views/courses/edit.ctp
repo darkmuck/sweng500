@@ -11,7 +11,7 @@
 ?>
 
 <?php $this->Html->addCrumb('Courses', '/courses/index');?>
-<?php $this->Html->addCrumb('Edit Course', '/courses/edit');?>
+<?php $this->Html->addCrumb('Edit Course');?>
 
 <div>
     <h2><?php echo $course['Course']['course_name'];?> </h2>

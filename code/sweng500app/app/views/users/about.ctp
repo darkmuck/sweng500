@@ -1,6 +1,6 @@
 
 
-<?php $this->Html->addCrumb('About');?>
+<?php $this->Html->addCrumb('About', '/Users/about');?>
 
 <div class="users about", align="center">
 
