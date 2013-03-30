@@ -11,7 +11,7 @@
 ?>
 
 <?php $this->Html->addCrumb('Courses', '/courses/index');?>
-<?php $this->Html->addCrumb('View Course', '/courses/view');?>
+<?php $this->Html->addCrumb('View Course', '/courses/view/'. $course['Course']['id']);?>
 
 <div>
     <h2><?php echo $course['Course']['course_name'];?> </h2>
