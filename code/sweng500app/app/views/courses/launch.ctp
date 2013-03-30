@@ -57,4 +57,15 @@
         <?php echo $this->Paginator->numbers();?> | 
         <?php echo $this->Paginator->next('Next Page -->'); ?>
     </div>
+<div><?php
+    	if($next_lesson)  {
+	  if ($count_complete > 0) {
+        	      echo $this->Form->button('Resume Course', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'lessons', 'action' => 'view', $next_lesson['Lesson']['id']))."'", 'class'=>'btn btn-primary'));
+    	  }
+	else {
+	echo $this->Form->button('Begin Course', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'lessons', 'action' => 'view', $next_lesson['Lesson']['id']))."'", 'class'=>'btn btn-primary'));	
+              	}
+                 }
+    ?>
+</div>
 </div>
