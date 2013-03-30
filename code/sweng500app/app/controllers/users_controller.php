@@ -5,7 +5,7 @@
  * File: UsersController.php
  * Description: This controller provides request handling for users data
  * Created: 2013-02-08
- * Modified: 2013-03-23 17:48
+ * Modified: 2013-03-30 15:23
  * Modified By: William DiStefano
 */
 
@@ -44,13 +44,13 @@ class UsersController extends AppController {
     		    	    if ($type == '1') $allow = true; //Allow Administrator
     		    	    break;
     		    case 'edit':
-    		    	     if ($type == '1') $allow = true; //Allow Administrator
+    		    	     if (in_array($type, array('1','2','3'))) $allow = true; //Allow Administrator, Instructor, or Student
     		    	    break;
     		    case 'add':
-    		    	     if ($type == '1')$allow = true; //Allow Administrator
+    		    	     if ($type == '1') $allow = true; //Allow Administrator
     		    	    break;
     		    case 'view':
-    		    	     if ($type == '1')$allow = true; //Allow Administrator
+    		    	     if ($type == '1') $allow = true; //Allow Administrator
     		    	    break;
     		    case 'delete':
     		    	     if ($type == '1') $allow = true; //Allow Administrator
@@ -126,28 +126,43 @@ class UsersController extends AppController {
     {
     	if ($this->__checkPermission('edit')); //Check permission
     	
-	$this->User->id = $id;
-	$this->User->read();
-	$user = $this->User->data;
-	$this->set('user', $user);
-	if (!empty($this->data)){
-		$this->data['TypeUser'][0]['TypesUser']['type_id'] = $this->data['User']['type_id'];
-		if ($this->User->saveAll($this->data)) 
-		{             
-			$this->Session->setFlash('User has been saved');             
-			$this->redirect(array('action' => 'index'));         
-		} else {
-			$this->Session->setFlash('Error: unable to edit user');
-		}
-	}
+	    $this->User->id = $id;
+	    $this->User->read();
+	    $user = $this->User->data;
+	    $this->set('user', $user);
+	    if (!empty($this->data)){
+		    $this->data['TypeUser'][0]['TypesUser']['type_id'] = $this->data['User']['type_id'];
+		    if ($this->User->saveAll($this->data)) 
+		    {             
+			    $this->Session->setFlash('User Account has been saved');
+                //redirect the user to a different page depending on their type
+                switch ($this->Auth->user()['User']['type_id']) {
+                    case '1':
+                        $this->redirect(array('action' => 'index')); 
+                        break;
+                    case '2':
+                        $this->redirect(array('action' => 'start')); 
+                        break;
+                    case '3':
+                        $this->redirect(array('action' => 'start')); 
+                        break;
+                    default:
+                        $this->redirect(array('action' => 'start')); 
+                        break;
+                }    
+			    $this->redirect(array('action' => 'start'));         
+		    } else {
+			    $this->Session->setFlash('Error: unable to edit user account');
+		    }
+	    }
     }
     
     function delete($id = null) {
     	if ($this->__checkPermission('delete')); //Check permission
     	
-	$this->User->delete($id);
-	$this->Session->setFlash('User has been deleted');
-	$this->redirect(array('action'=>'index'));
+	    $this->User->delete($id);
+	    $this->Session->setFlash('User Account has been deleted');
+	    $this->redirect(array('action'=>'index'));
     }
     
     function add () 

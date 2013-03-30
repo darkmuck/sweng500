@@ -20,7 +20,7 @@ class AppController extends Controller {
         $this->Auth->loginAction=array('controller'=>'users','action'=>'login');
         $this->Auth->loginRedirect=array('controller' => 'users', 'action' => 'start');
         $this->Auth->logoutAction=array('controller' => 'users', 'action' => 'logout');
-	$this->Auth->logoutRedirect = array('action'=>'start');
+	    $this->Auth->logoutRedirect = array('action'=>'start');
         $this->Auth->authorize='controller';
         $this->Auth->userScope=array('User.enabled = 1');
         $this->set('Auth',$this->Auth->user());
