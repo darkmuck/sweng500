@@ -9,6 +9,9 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php $this->Html->addCrumb('Roster', '/Rosters/');?>
+<?php $this->Html->addCrumb($lesson['Course']['course_name'], '/Courses/launch/'. $lesson['Lesson']['course_id']);?>
+
 <head><style>
 .color {  color: #6699CC;}
 .right {   float:right;}
