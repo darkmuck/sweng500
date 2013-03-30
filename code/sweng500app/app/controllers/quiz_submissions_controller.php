@@ -64,8 +64,9 @@ class QuizSubmissionsController extends AppController {
 		}
 		$this->Lesson->Behaviors->attach('Containable'); //helps prevent retrieving related data
 		$lesson = $this->Lesson->find('first', array('conditions'=>array('Lesson.id'=>$quiz['Quiz']['lesson_id']), 'contain'=>array()));
+		$course = $this->Course->find('first', array('conditions' => array('Course.id' => $quiz['Quiz']['course_id'])));
 		$questions = $this->Quiz->Question->find('all', array('conditions' => array('quiz_id' => $quizId)));
-		$this->set(compact('quiz','questions','lesson'));
+		$this->set(compact('quiz','questions','lesson', 'course'));
 		$this->set('userId',$this->Auth->user('id'));
 		
 		if (!empty($this->data)) {
