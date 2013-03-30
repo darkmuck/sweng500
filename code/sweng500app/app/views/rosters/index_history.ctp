@@ -38,7 +38,8 @@
         <td><?php echo $roster['Roster']['completion_status']; ?></td> 
         <td>
             <?php 
-            echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'courses', 'action'=>'view',$roster['Course']['id']))."'", 'class'=>'btn btn-info'));
+             echo $this->Html->link('Launch', array('controller'=> 'Courses', 'action' => 'launch', $roster['Course']['id']), array('class' => 'btn btn-info')); 
+             echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'courses', 'action'=>'view',$roster['Course']['id']))."'", 'class'=>'btn btn-info'));
             ?>
         </td>
     </tr>

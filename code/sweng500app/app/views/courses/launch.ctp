@@ -48,8 +48,8 @@
     <tr><td><br/></td><td><br/></td><td><br/></td></tr>
     <tr><td class="bold">Course Status</td>
     <td class="bold"><?php echo $roster_course['Roster']['completion_status']; ?></td>
-    <td><?php if(($status == 'Complete') && ($roster_course['Roster']['completion_status'] == 'Incomplete')) {
-	echo $this->Html->link('Complete This Course', array('controller'=>'rosters', 'action'=>'complete',$roster_course['Roster']['id'])); }?></td>
+    <td><?php if(($status == 'Complete')) {
+	echo $this->Html->link('Print Certificate', '#'); }?></td>
 </table>
 
     <div align="center" width="100%">

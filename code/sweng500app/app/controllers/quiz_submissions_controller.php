@@ -12,7 +12,7 @@
 App::import('Controller', 'LessonStatuses');
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course');
+	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course', 'Roster');
 	
 	private function __checkPermissions($action, $quiz) {
 		$allow = false;
@@ -159,6 +159,18 @@ class QuizSubmissionsController extends AppController {
 	 			
 	 		} else if (!empty($quiz['Quiz']['course_id']) && $this->Auth->user('type_id') == 3) {
 	 			$this->Session->setFlash('Congratulations, you have completed this course.');
+	 			// get the roster and set it to complete
+	 			$roster = $this->Roster->find('first', 
+	 				array('conditions' => 
+	 					array(
+							'Roster.course_id' => $quiz['Quiz']['course_id'],
+							'Roster.user_id' => $this->Auth->user('id')
+							)
+						)
+					);
+				$this->Roster->id = $roster['Roster']['id'];
+				$this->Roster->saveField("completion_status", "Complete"); 
+	 					
 	 		}
 		} else {
 			$this->Session->setFlash('Invalid parameters entered.');

@@ -12,7 +12,7 @@
 class CoursesController extends AppController {
 
     var $name = 'Courses';
-	var $uses = array('Course','Lesson');
+	var $uses = array('Course','Lesson', 'LessonStatus');
 	
 	 function index() {
 
@@ -133,61 +133,86 @@ class CoursesController extends AppController {
     }
 
 	function launch($id = null) {
-                   
+		
 		
 		$this->Lesson->recursive= 1;
 		$this->paginate = array(
 			'Lesson' => array(
-   			 'conditions' => array('Lesson.course_id' => $id),
-   			 'fields' => array('Lesson.id', 'Lesson.name')
+				'conditions' => array('Lesson.course_id' => $id),
+				'fields' => array('Lesson.id', 'Lesson.name')
 			),
 			'LessonStatus' => array(
-   			 'conditions' => array('Lesson.id' => 'LessonStatus.lesson_id'),
-    			'fields' => array('LessonStatus.status')
+				'conditions' => array('Lesson.id' => 'LessonStatus.lesson_id'),
+				'fields' => array('LessonStatus.status')
 			)
 		);
 		$lessons = $this->paginate('Lesson');
-/*die(debug($lessons));*/
+		
 		$this->set('lessons', $lessons);
-
-      	$roster_course = $this->Course->Roster->find('first', array(
-             	'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
-                    'Roster.course_id' => $id)
+		
+		$roster_course = $this->Course->Roster->find('first', array(
+			'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
+				'Roster.course_id' => $id)
 		));
-        $this->set('roster_course', $roster_course);
-
+		$this->set('roster_course', $roster_course);
+		
 		$this->Course->id = $id;
 		$course = $this->Course->read();
+		
 		$this->set('course', $course);
-
-
-	$this->Lesson->unbindModel(array(
-		'belongsTo' => array('Lesson')));
-	$this->Lesson->bindModel(array(
-    		'hasOne' => array(
-     			 'LessonStatus' => array(
-         			'foreignKey' => false,
-         			'conditions' => array('LessonStatus.lesson_id = Lesson.id')
-       				)
+	
+		$this->Lesson->unbindModel(array(
+			'belongsTo' => array('Lesson')));
+		$this->Lesson->bindModel(array(
+			'hasOne' => array(
+				'LessonStatus' => array(
+					'foreignKey' => false,
+					'conditions' => array('LessonStatus.lesson_id = Lesson.id')
+				)
 			)
-	));
-	$this->Lesson->recursive= 1;
-	$count_complete=$this->Lesson->find('count', array(
-  			 'conditions' => array(
-                                       	 'Lesson.course_id' => $id,
-                                      	 'LessonStatus.user_id' => $this->Auth->user('id')
-                              		 ),                               
-  			 'contain' => array('Lesson', 'LessonStatus')
-	));
-
-	$count_lessons = $this->Lesson->find('count', array(
-  		 'conditions' => array('Lesson.course_id' => $id)
-	));
-	if($count_complete - $count_lessons == 0) {
- 	$status = 'Complete';}
-	else{ $status = 'Incomplete';}
-      	$this->set('status', $status);
-}
+		));
+		$this->Lesson->recursive= 1;
+		$count_complete=$this->Lesson->find('count', array(
+			'conditions' => array(
+				'Lesson.course_id' => $id,
+				'LessonStatus.user_id' => $this->Auth->user('id')
+			),                               
+			'contain' => array('Lesson', 'LessonStatus')
+		));
+		
+		$count_lessons = $this->Lesson->find('count', array(
+			'conditions' => array('Lesson.course_id' => $id)
+		));
+		
+		$status = 'Complete';
+		if($roster_course['Roster']['completion_status'] != 'Complete') {
+			if($count_complete - $count_lessons == 0) {
+				if(!empty($course['Quiz']['id'])) {
+					$status = 'Incomplete';
+					$quizSub = $this->Course->Quiz->QuizSubmission->find('first', 
+						array('conditions' => array('quiz_id' => $course['Quiz']['id'],
+							'user_id' => $this->Auth->user('id'))));
+					if(!empty($quizSub)) {
+						$status = 'Complete';
+					}
+				} else { 
+					// there is no course test. 
+					$status = 'Complete';
+				}
+				if($status == 'Complete') {
+					$roster_course['Roster']['completion_status'] = $status;
+					$this->Course->Roster->id = $roster_course['Roster']['id'];
+					$this->Course->Roster->saveField('completion_status', 'Complete');
+					$this->Session->setFlash('Congratulations, you have completed this course');
+				}
+				
+			} else { 
+				$status = 'Incomplete';
+			}
+		} 
+		
+		$this->set('status', $status);
+	}		
 
 	function edit($id = null) 
     {
