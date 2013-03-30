@@ -91,8 +91,8 @@ class LessonsController extends AppController {
 		$this->Lesson->read();
 		$lesson = $this->Lesson->data;
 		$this->set('lesson', $lesson);
-		
-		$this->__checkPermissions($this->data['Lesson']['course_id']);
+
+		$this->__checkPermissions($lesson['Lesson']['course_id']);
 		
 		$this->loadModel('Course');
 		$this->Course->id = $this->data['Lesson']['course_id'];

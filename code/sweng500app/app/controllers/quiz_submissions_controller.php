@@ -9,6 +9,7 @@
  * Modified By: William DiStefano
 */
 
+App::import('Controller', 'LessonStatuses');
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
 	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course');
@@ -95,12 +96,18 @@ class QuizSubmissionsController extends AppController {
 	 		
 	 		$quizResult = $this->QuizGrader->grade($quiz, $quizsub);
 	 		
-	 		$lesson = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
+	 		$course = array();
+	 		if(!empty($quiz['Quiz']['lesson_id'])) {
+	 			$course = $this->Lesson->findById($quiz['Quiz']['lesson_id']);
+	 		} else if (!empty($quiz['Quiz']['course_id'])) {
+	 			$course = $this->Course->findById($quiz['Quiz']['course_id']);
+	 		}
+	 		
 	 		
 	 		//if the quiz passed update the submissions and show results. 
 	 		//If not, redirect back to the lesson page and remove the submission.
 	 		
-	 		if($quizResult->getPercentage() >= $lesson['Course']['quiz_passing_score']) {
+	 		if($quizResult->getPercentage() >= $course['Course']['quiz_passing_score']) {
 				foreach($quizsub as $quizSubmission) {
 					foreach($quizResult->answerRubric as $key => $correct) {
 						if($quizSubmission['QuizSubmission']['question_id'] == $key) {
@@ -118,7 +125,40 @@ class QuizSubmissionsController extends AppController {
 	 			$this->QuizSubmission->deleteAll(array('QuizSubmission.quiz_id' => $quizId,
 	 				'QuizSubmission.user_id' => $userId));
 	 			$this->Session->setFlash('You did not pass the quiz. Please try again');
-	 			$this->redirect(array('controller'=>'Lessons', 'action' => 'view', $lesson['Lesson']['id']));
+	 			if(!empty($quiz['Quiz']['lesson_id'])) {
+	 				$this->redirect(array('controller'=>'Lessons', 'action' => 'view', 
+	 					$quiz['Quiz']['lesson_id']));
+	 			} else if (!empty($quiz['Quiz']['course_id'])) {
+	 				$this->redirect(array('controller' => 'Courses', 'action' => 'launch',
+	 					$quiz['Quiz']['course_id']));
+	 			}
+	 		}
+	 		
+	 		//check to see if the lesson is completed if the student is checking their own results.
+	 		if(!empty($quiz['Quiz']['lesson_id']) && $this->Auth->user('type_id') == 3) {
+	 			//quiz ids that belong to the lesson
+	 			$quiz_ids = $this->Quiz->find('all', array('fields' => 'DISTINCT id', 
+					'conditions' => 'Quiz.lesson_id = ' . $quiz['Quiz']['lesson_id']));
+				$quiz_ids = Set::extract($quiz_ids, '/Quiz/id');
+	 			//get completed quiz submission quiz ids
+	 			$completed_quizzes = $this->QuizSubmission->find('all', 
+	 				array('fields' => 'DISTINCT quiz_id',
+	 				'conditions' => array('quiz_id' => $quiz_ids, 
+					'user_id' => $this->Auth->user('id'))));
+ 				$completed_quizzes = Set::Extract($completed_quizzes, '/QuizSubmission/quiz_id');
+ 				
+ 				if(array_diff($quiz_ids, $completed_quizzes) == array()) {
+ 					
+ 					$lsc = new LessonStatusesController;
+ 					$lsc->constructClasses();
+// 					die(debug($lsc));
+ 					$lsc->_completeLesson($quiz['Quiz']['lesson_id'], $this->Auth->user('id'));
+ 					$this->Session->setFlash('Congratulations, you have completed this lesson.');
+ 				} 
+	 			
+	 			
+	 		} else if (!empty($quiz['Quiz']['course_id']) && $this->Auth->user('type_id') == 3) {
+	 			$this->Session->setFlash('Congratulations, you have completed this course.');
 	 		}
 		} else {
 			$this->Session->setFlash('Invalid parameters entered.');

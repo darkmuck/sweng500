@@ -88,10 +88,5 @@
   	endif;
   ?>
 	<hr />
-  <p class="right"> <?php
-  	if($isStudent && sizeof($lesson['Quiz']) == sizeOf($completedQuizzes)) {
- 		echo $this->Html->link('Complete Lesson', 
- 			array('controller' => 'lesson_statuses', 'action'=> 'add', $lesson['Lesson']['id']));
-  	} 
-    ?></p>
+
 </div>

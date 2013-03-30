@@ -68,8 +68,14 @@
     </table>
     
     
-    <?php echo $this->Html->link('Return to Lesson', 
-    	array('controller' => 'lessons', 'action' => 'view', $quiz['Quiz']['lesson_id']));
+    <?php 
+    	if(!empty($quiz['Quiz']['lesson_id'])) {
+	    	echo $this->Html->link('Return to Lesson', 
+	    		array('controller' => 'lessons', 'action' => 'view', $quiz['Quiz']['lesson_id']));
+    	} else {
+    		echo $this->Html->link('Return to Course',
+    			array('controller' => 'Courses', 'action' => 'launch', $quiz['Quiz']['course_id']));
+    	}
 	?>
 
 </div>
