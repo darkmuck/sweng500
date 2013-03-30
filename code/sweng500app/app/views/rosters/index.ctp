@@ -10,7 +10,6 @@
 */
 ?>
 
-<?php $this->Html->addCrumb('Courses', '/Courses/');?>
 <div>
     <h2>Student Roster</h2>
     

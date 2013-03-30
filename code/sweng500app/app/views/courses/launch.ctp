@@ -9,7 +9,6 @@
 */
 
 ?>
-<?php $this->Html->addCrumb('Courses', '/courses/index');?>
 <head><style>
 .bold{ font-weight:bold;}
 .color { color: #6699CC;}
