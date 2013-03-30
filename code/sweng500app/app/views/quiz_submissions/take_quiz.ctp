@@ -11,8 +11,11 @@
 ?>
 
 <div>
+	<?php if(!empty($lesson['Lesson']['name'])) : ?>
     <h2>Quiz for <?php echo $lesson['Lesson']['name'] ?></h2>
-
+	<?php else : ?>
+	<h2> Quiz for <?php echo $course['Course']['course_name']; ?> </h2>
+	<?php endif; ?>
     <?php echo $this->Form->create('QuizSubmission', array('url'=>'/quiz_submissions/take_quiz/'.$quiz['Quiz']['id']));?>
     
     <table class="table">
