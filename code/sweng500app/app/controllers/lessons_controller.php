@@ -8,7 +8,7 @@
  * Modified: Feb 22, 2013 1:49:02 PM
  * Modified By: Kevin Scheib
 */
-
+App::import('Controller', 'LessonStatuses');
 class LessonsController extends AppController {
 	var $name = 'Lessons';
 	
@@ -137,19 +137,27 @@ class LessonsController extends AppController {
 		$this->set('isStudent', $isStudent);
 		
 		if($isStudent) {
-			$this->loadModel('QuizSubmissions');
-			$completedQuizzes = array();
-			foreach($lesson['Quiz'] as $quiz) {
-				$quizSub = $this->QuizSubmissions->find('first', array('conditions' => 
+			if(!empty($lesson['Quiz'])) {
+				$this->loadModel('QuizSubmissions');
+				$completedQuizzes = array();
+				foreach($lesson['Quiz'] as $quiz) {
+					$quizSub = $this->QuizSubmissions->find('first', array('conditions' => 
 						array('QuizSubmissions.quiz_id' => $quiz['id'], 
 							'QuizSubmissions.user_id' => $this->Auth->User('id'))
-						));
-				if($quizSub) {
-					array_push($completedQuizzes, $quiz['id']);
+					));
+					if($quizSub) {
+						array_push($completedQuizzes, $quiz['id']);
+					}
+					
 				}
-						
+				$this->set('completedQuizzes', $completedQuizzes);
+				
+			} else {
+				// There are no quizzes, mark the lesson as completed.
+				$lsc = new LessonStatusesController;
+				$lsc->constructClasses();
+				$lsc->_completeLesson($lesson['Lesson']['id'], $this->Auth->user('id'));
 			}
-			$this->set('completedQuizzes', $completedQuizzes);
 		}
 		
 	}

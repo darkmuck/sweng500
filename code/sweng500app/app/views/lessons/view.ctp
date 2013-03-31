@@ -54,7 +54,7 @@
 <hr />
 <div>
   <?php
-  	if($isStudent):
+  	if($isStudent && !empty($lesson['Quiz'])):
   ?>
   	<p style="font-weight: bold;">Take Quizzes in order to complete lesson</p>
   	<table class="padded">
