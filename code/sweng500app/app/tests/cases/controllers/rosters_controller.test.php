@@ -36,7 +36,8 @@ class RosterControllerTest extends CakeTestCase {
 	
 	public $debugRoster = array('id' => 5,
 		'course_id' => 2, 
-		'student_id' => 1);
+		'user_id' => 1,
+		'completion_status' => 'Incomplete');
 	
 	
 	function startTest() {
@@ -91,6 +92,26 @@ class RosterControllerTest extends CakeTestCase {
 		$this->assertTrue( $count >= 0);
 	}	
 	
-	
+	function testComplete() {
+  		$this->TestRosterController->data = array('Roster' => $this->debugRoster);
+		$this->TestRosterController->params = Router::parse('/Rosters/complete');
+		$this->TestRosterController->params['url']['url'] ='/Rosters/complete';
+		$this->TestRosterController->beforeFilter();
+
+		$this->TestRosterController->complete($this->debugRoster['id']);
+		$this->TestRosterController->Roster->read();
+		$this->assertTrue($this->TestRosterController->Roster->completion_status = "Complete");
+
+}
+
+	function testPrintCertificate() {
+		$id = 2;
+                        
+		$this->TestRosterController->params = Router::parse('/Rosters/printCertificate');
+		$this->TestRosterController->beforeFilter();
+		$this->TestRosterController->printCertificate($id);
+		$this->assertEqual($this->TestRosterController->viewVars['course']['Course']['id'], 
+			$this->debugRoster['course_id']);
+	}	
 }
 ?>

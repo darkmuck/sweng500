@@ -40,6 +40,8 @@
             <?php 
              echo $this->Html->link('Launch', array('controller'=> 'Courses', 'action' => 'launch', $roster['Course']['id']), array('class' => 'btn btn-info')); 
              echo $this->Form->button('View', array('onClick'=>"location.href='".$this->Html->url(array('controller' => 'courses', 'action'=>'view',$roster['Course']['id']))."'", 'class'=>'btn btn-info'));
+	 if($roster['Roster']['completion_status'] == 'Complete') {
+            echo '&nbsp&nbsp' . $this->Html->link('Print Certificate', array('controller' => 'rosters', 'action'=>'printCertificate',$roster['Course']['id']));}
             ?>
         </td>
     </tr>

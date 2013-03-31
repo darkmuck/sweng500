@@ -41,6 +41,14 @@ public function indexHistory() {
     
 }
 
+function printCertificate($id=null) {
+          $this->layout = 'blank';
+          $this->Course->id = $id;
+          $course = $this->Course->read();
+          $this->set('course', $course);
+          $this->set('title_for_layout', 'Print Certificate');
+}
+
 
 function view($id = null) {
           $this->Course->id = $id;

@@ -1,0 +1,96 @@
+/*paragraphs will be red */
+p {
+    color: black;
+    text-align: center;
+}
+
+/*Links will be blue */
+a {
+    color: blue;
+}
+
+/*applies to all text in the body section =.8 times current font. use 12px is for pixels*/
+body{
+  font-size: 0.8em;
+  color: blue;
+  background-color: white;
+
+}
+
+
+/* background bar/color for all H1 tags */
+h1 {
+
+   color: #003399;
+   margin: 1em;        /* space away from left margin*/
+   font-size: 2.5em;
+   text-align: center;
+
+   
+}
+h3.name {
+
+   color: black;
+   margin: 1em;        /* space away from left margin*/
+  /* space around the text.  3em leave a pretty big box around the text*/
+   font-size: 2.5em;
+   text-decoration: underline;
+   font-style: italic;
+   generic-family: cursive;
+   text-align: center;
+   
+}
+
+h2.box {
+   color: white;
+   margin: 2em;        /* space away from left margin*/
+   padding: 2em;   /* space around the text.  3em leave a pretty big box around the text*/
+   font-size: 1.5em;
+   background-color: #333300;
+   text-align: center;
+}
+
+h2.nobox {
+   color: #003399;
+   text-align: center;
+}
+
+/*box around h2 that doesn't fill inside, only the border/outside*/
+
+
+IMG.displayed {
+   display:block;
+   margin-left:auto;
+   margin-right: auto;
+}
+
+/* bolded words using 'strong' tag can get extra special formatting */
+strong {
+  font-style: italic;
+  text-transform: uppercase;
+  font-weight: bold;
+
+}
+
+ul {
+   line-height: 1.5;
+  list-style-image:url('blue_square_2.gif');
+  
+}
+
+body.border1{
+margin:10%;
+border: solid 6px #6699CC;
+outline: #000099 solid thick; /*outline is always outside box*?
+border-style:solid thick;
+
+
+}
+body.border2{
+border-style:solid;
+border-width:medium;
+border-color:#99CCFF;
+padding:50px;
+margin:10px;
+position:relative;
+}
