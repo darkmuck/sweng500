@@ -178,6 +178,23 @@ class UserControllerTest extends CakeTestCase {
 
 		$this->assertEqual($this->TestUserController->redirectUrl, array('action'=> 'index'));
 	}
+
+	function testRegister() {
+		$this->TestUserController->data = array('User' => $this->debugUser,
+			'TypeUser' => array('type_id' => 3));
+		// debug($this->TestUserController->data);
+		$this->TestUserController->params = Router::parse('/Users/register');
+		$this->TestUserController->beforeFilter();
+		
+		$this->TestUserController->register();
+		
+		$this->TestUserController->User->id = -1;
+
+		$user = $this->TestUserController->User->read();
+		// debug($user);
+
+		$this->assertEqual($this->TestUserController->redirectUrl, array('action'=> 'start'));
+	}
 	
 	function testViewUser() {
 		$id = -1;
