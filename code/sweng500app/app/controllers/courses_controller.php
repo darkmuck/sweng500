@@ -16,11 +16,11 @@ class CoursesController extends AppController {
 	
 	 function index() {
 
-	$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+	$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc'), 'group' => array('Course.id')));
 	if (($this->Auth->user('type_id')) ==3) {  //Student 	
       		$courses = $this->paginate('Course', array('Course.course_status' => 'C')); }
                    else{
-	$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+	/*$this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));*/
         	$courses = $this->paginate('Course');}
     	$this->loadModel('User');
     	$users = $this->Course->User->find('list', array('fields' => array('name')));
@@ -33,7 +33,7 @@ class CoursesController extends AppController {
     }
 	
 	function indexCurrent() {
-        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc'), 'group' => array('Course.id')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'C'));
         
@@ -43,7 +43,7 @@ class CoursesController extends AppController {
     }
 	
 	function indexArchived() {
-        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc'), 'group' => array('Course.id')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'A'));
         
@@ -53,7 +53,7 @@ class CoursesController extends AppController {
     }
 	
 	function indexUnderDevelopment() {
-        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc')));
+        $this->paginate = array('Course' => array('limit' => 10, null, 'order' => array('Course.course_number' => 'asc'), 'group' => array('Course.id')));
 
         $courses = $this->paginate('Course', array('Course.course_status'=>'U'));
         
@@ -147,12 +147,14 @@ class CoursesController extends AppController {
 			)
 		);
 		$lessons = $this->paginate('Lesson');
+
 		
 		$this->set('lessons', $lessons);
 		
 		$roster_course = $this->Course->Roster->find('first', array(
 			'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
 				'Roster.course_id' => $id)
+
 		));
 		$this->set('roster_course', $roster_course);
 		
