@@ -22,20 +22,27 @@
         <div class="navbar">
         <div class="navbar-inner">
         <?php
+        
             echo $this->Html->link('Home', array('controller'=>'Users','action'=>'start'),array('class'=>'brand'));
             echo '<ul class="nav">';
             echo '<li>'. $this->Html->link('Courses', array('controller'=>'Courses','action'=>'index')) .'</li>';
-            echo '<li>'. $this->Html->link('Grades', array('controller'=>'Grades','action'=>'index')) .'</li>';
-            echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
-            if ($this->Session->check('Auth.User') == 0) {
+            if($this->Session->read('Auth.User.type_id') == 3) {
+            	echo '<li>'. $this->Html->link('Roster', array('controller'=>'Rosters','action'=>'index')) .'</li>';
+            }
+            if($this->Session->read('Auth.User.type_id') == 1) {
+            	echo '<li>'. $this->Html->link('Users', array('controller'=>'Users','action'=>'index')) .'</li>';
+            }
+            
+		    echo '<li>'. $this->Html->link('About', array('controller'=>'Users','action'=>'about')) .'</li>';
+		    echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'Users','action'=>'contactus')) .'</li>';
+		    echo '<li>'. $this->Html->link('Help', array('controller'=>'users','action'=>'help')) .'</li>';
+		    
+		    if ($this->Session->check('Auth.User') == 0) {
                 echo '<li>'. $this->Html->link('Login', array('controller'=>'Users','action'=>'login')) .'</li>';
                 echo '<li>'. $this->Html->link('Register', array('controller'=>'Users','action'=>'register')) .'</li>';
             } else {
                 echo '<li>'. $this->Html->link('Logout', array('controller'=>'Users','action'=>'logout')) .'</li>';
             }
-	    echo '<li>'. $this->Html->link('About', array('controller'=>'Users','action'=>'about')) .'</li>';
-	    echo '<li>'. $this->Html->link('Contact Us', array('controller'=>'Users','action'=>'contactus')) .'</li>';
-	    echo '<li>'. $this->Html->link('Help', array('controller'=>'users','action'=>'help')) .'</li>';
         ?>
         </div>
         <div class="breadcrumb">
