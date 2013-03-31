@@ -147,14 +147,13 @@ class CoursesController extends AppController {
 			)
 		);
 		$lessons = $this->paginate('Lesson');
-		
+
 		
 		$this->set('lessons', $lessons);
 		
 		$roster_course = $this->Course->Roster->find('first', array(
 			'conditions' => array('Roster.user_id' => $this->Auth->user('id'), 
 				'Roster.course_id' => $id)
-				
 		));
 		$this->set('roster_course', $roster_course);
 		
@@ -172,7 +171,6 @@ class CoursesController extends AppController {
 					'conditions' => array('LessonStatus.lesson_id = Lesson.id')
 				)
 			)
-			
 		));
 		$this->Lesson->recursive= 1;
 		$count_complete=$this->Lesson->find('count', array(
