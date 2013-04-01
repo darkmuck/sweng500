@@ -46,6 +46,7 @@ function printCertificate($id=null) {
           $this->Course->id = $id;
           $course = $this->Course->read();
           $this->set('course', $course);
+          $this->set('name', $this->Auth->user('name'));
           $this->set('title_for_layout', 'Print Certificate');
 }
 

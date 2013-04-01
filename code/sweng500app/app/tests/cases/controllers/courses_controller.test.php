@@ -174,8 +174,10 @@ class CourseControllerTest extends CakeTestCase {
 		$this->TestCourseController->params = Router::parse('/Courses/archive');
 		$this->TestCourseController->beforeFilter();
 		
+		$this->TestCourseController->data = $this->debugCourse;
+		$this->TestCourseController->add();
 		$this->TestCourseController->archive($id);
-		$this->assertTrue(file_exists('../models/datasources/archive.zip'));
+		$this->assertTrue(file_exists('../models/datasources/testc1archive.zip'));
 	}
 	
 	function testExtract() {

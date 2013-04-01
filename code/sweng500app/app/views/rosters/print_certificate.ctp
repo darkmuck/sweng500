@@ -14,7 +14,7 @@
 <h1>CERTIFICATE OF COMPLETION</h1>
 <img class="displayed" src="/sweng500app/img/mini_logo.gif" alt="Team 3 E-Learning">
 <h2 class="nobox">AWARDED TO</h2>
-<h3 class="name"><?php echo $course['User']['name']; ?></h3>
+<h3 class="name"><?php echo $name; ?></h3>
 <h2 class="box"><?php echo $course['Course']['course_name']; ?><br />
 <br /><?php echo date("m/d/Y h:i:s a"); ?>
 </h2>
