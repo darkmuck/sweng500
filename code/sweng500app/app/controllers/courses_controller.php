@@ -202,6 +202,7 @@ class CoursesController extends AppController {
 				}
 				if($status == 'Complete') {
 					$roster_course['Roster']['completion_status'] = $status;
+					$this->set('roster_course', $roster_course);
 					$this->Course->Roster->id = $roster_course['Roster']['id'];
 					$this->Course->Roster->saveField('completion_status', 'Complete');
 					$this->Session->setFlash('Congratulations, you have completed this course');
