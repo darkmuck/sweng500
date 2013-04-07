@@ -12,7 +12,7 @@
 App::import('Controller', 'LessonStatuses');
 class QuizSubmissionsController extends AppController {
 	var $name = "QuizSubmissions";
-	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course', 'Roster');
+	var $uses = array('QuizSubmission', 'Quiz', 'QuizGrader', 'Lesson', 'Course', 'Roster', 'Grade');
 	
 	private function __checkPermissions($action, $quiz) {
 		$allow = false;
@@ -121,6 +121,26 @@ class QuizSubmissionsController extends AppController {
 				$this->set('quizSubmission', $quizsub);
 				$this->set('quiz', $quiz);
 				$this->set('results', $quizResult);
+				
+				$name = $quiz['Quiz']['name'];
+				if(empty($name)) {
+					$name = 'Course Test';
+				}
+				
+				$grade = $this->Grade->find('first', array('conditions' => 
+					array('course_id' => $course['Course']['id'], 
+						'user_id' => $this->Auth->user('id'),
+						'name' => $name)
+						 ) );
+				if(!$grade) 
+			    {
+			    	$gradeData = array('name' => $name, 
+						'user_id' => $this->Auth->user('id'),
+						'course_id' => $course['Course']['id'],
+						'grade' => $quizResult->getPercentage() );
+					$this->Grade->create();
+					$this->Grade->save($gradeData);
+				}
 	 		} else {
 	 			$this->QuizSubmission->deleteAll(array('QuizSubmission.quiz_id' => $quizId,
 	 				'QuizSubmission.user_id' => $userId));
