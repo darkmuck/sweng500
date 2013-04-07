@@ -27,6 +27,8 @@
 <p class="right"><?php echo $this->Html->link('Take Course Test', array('controller' => 'quiz_submissions', 'action'=> 'take_quiz', $course['Quiz']['id'])); ?></p>
 <p class="right color">&nbsp&nbsp|&nbsp&nbsp</p>
 <?php endif; ?>
+  <p class="right"><?php echo $this->Html->link('Grades', array('controller' => 'grades', 'action' => 'index', $course['Course']['id'])); ?>
+  <p class="right color">&nbsp&nbsp|&nbsp&nbsp</p>
   <p class="right"><?php echo $this->Html->link('Bookmarks', array('controller' => 'bookmarks', 'action'=>'index',$course['Course']['id']));?></p>
     
 
