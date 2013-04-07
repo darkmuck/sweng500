@@ -9,7 +9,8 @@
  * Modified By: Dawn Viscuso
 */
 ?>
-
+<?php $this->Html->addCrumb('Courses', '/Courses/');?>
+<?php $this->Html->addCrumb('Roster History');?>
 <div>
     <h2>Student Roster</h2>
     

@@ -9,7 +9,8 @@
  * Modified By: Dawn Viscuso
 */
 ?>
-
+<?php $this->Html->addCrumb('Courses', '/Courses/');?>
+<?php $this->Html->addCrumb('Search Catalog');?>
 <div>
 
     <h2>Search Course Catalog</h2>
@@ -18,6 +19,7 @@
         echo $form->create('Course', array('action'=>'searchResults')); 
 
         echo $form->input('course_name',array('label'=>'Course Title','type' => 'text')); 
+        echo $form->input('course_number',array('label'=>'Course Number','type' => 'text')); 
         echo $form->end('Search'); 
 ?> 
     

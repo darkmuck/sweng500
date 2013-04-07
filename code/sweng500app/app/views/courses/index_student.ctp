@@ -9,7 +9,7 @@
  * Modified By: Dawn Viscuso
 */
 ?>
-
+<?php $this->Html->addCrumb('Courses');?>
 <div>
     <h2>Course List</h2>
     

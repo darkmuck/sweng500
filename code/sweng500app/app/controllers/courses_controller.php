@@ -123,7 +123,8 @@ class CoursesController extends AppController {
 	
 	function searchResults() {
 		if(!empty($this->data )) {    //not working - always returns true even if field is blank
-			$data = $this->paginate('Course', array('','Course.course_name LIKE' => '%' . $this->data['Course']['course_name'] . '%'));
+			$data = $this->paginate('Course', array('','Course.course_name LIKE' => '%' . $this->data['Course'] ['course_name'] . '%', 
+"OR" => array('Course.course_number LIKE' => '%' . $this->data['Course']['course_number'] . '%' )));
 			$this->set('courses', $data);
 			$this->render('index_student');
 		}else {
