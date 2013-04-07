@@ -198,8 +198,10 @@ class UsersController extends AppController {
     }
     
     function login() {
-    	
-        if (!empty($this->data)) {
+        $max_login_attempts = 3;
+        
+
+        if (!empty($this->data)) { 
             $user = $this->User->find('first',
                 array('conditions'=>
                 array('username'=>$this->Auth->data['User']['username'], 'password'=> $this->Auth->data['User']['password'])
@@ -207,10 +209,41 @@ class UsersController extends AppController {
             );
 
             if (!empty($user)) {
-                $this->Auth->login($user);
-                $this->Session->delete('Message.auth');
-                $this->redirect($this->Auth->redirect());
+                //check if the account is enabled
+                if ($user['User']['enabled'] == 1) {
+                    $this->Session->write($user['User']['username'], 0); //set login attempts counter to zero
+                    $this->Auth->login($user);
+                    $this->Session->delete('Message.auth');
+                    $this->redirect($this->Auth->redirect());
+                } else {
+                    $this->Session->setFlash('Your account is disabled, please contact us for help');
+                    $this->redirect(array('action'=>'start'));
+                }
             }
+
+            $username = $this->data['User']['username'];
+            $attempts = intval($this->Session->read($username));
+
+            $this->Session->write($username, ++$attempts);
+
+            if ($attempts > intval($max_login_attempts))
+            {
+                    $user = $this->User->find('first',
+                        array('conditions'=>
+                        array('username'=>$username)
+                        )
+                    );
+
+                    if (!empty($user)) {
+                        $this->User->id = $user['User']['id'];
+                        $this->User->saveField('enabled',0);
+                    }
+
+                    $this->Session->setFlash('Your account has been disabled, please contact us for help.');
+                    $this->redirect(array('action'=>'start'));
+            }
+
+            $this->Session->setFlash('Invalid credentials, please try again');
             $this->redirect(array('action'=>'start'));
         }
     }
