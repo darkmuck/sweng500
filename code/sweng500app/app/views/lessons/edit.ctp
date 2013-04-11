@@ -9,6 +9,12 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php
+$this->Html->addCrumb('Courses', '/Courses');
+$this->Html->addCrumb($lesson['Course']['course_name'], '/Lessons/index/'. $lesson['Course']['id']);
+$this->Html->addCrumb($lesson['Lesson']['name']);
+?>
+
 <script type="text/javascript">
         $(function() {
                 $('textarea.tinymce').tinymce({
@@ -38,7 +44,7 @@
         });
 </script>
 <div>
-    <h2>Edit Lesson for <?php echo $course['Course']['course_name'] ?></h2>
+    <h2>Edit Lesson</h2>
     
     <?php echo $this->Form->create('Lesson', array('action'=>'edit')); ?>
     <?php echo $this->Form->hidden('course_id', array('value'=>$lesson['Lesson']['course_id'])); ?>

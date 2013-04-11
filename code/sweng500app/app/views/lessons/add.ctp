@@ -9,6 +9,12 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php
+$this->Html->addCrumb('Courses', '/Courses');
+$this->Html->addCrumb($course['Course']['course_name'], '/Lessons/index/'. $course['Course']['id']);
+$this->Html->addCrumb('New Lesson');
+?>
+
 <script type="text/javascript">
         $(function() {
                 $('textarea.tinymce').tinymce({

@@ -9,6 +9,14 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php
+	$this->Html->addCrumb('Roster', '/Rosters');
+	if(!empty($quiz['Quiz']['lesson_id'])) {
+		$this->Html->addCrumb($lesson['Lesson']['name'], '/Lessons/view/'.$lesson['Lesson']['id']);
+	} else {
+		$this->Html->addCrumb($course['Course']['course_name'], '/Courses/launch/'.$course['Course']['id']);
+	}
+?>
 
 <div>
 	<?php if(!empty($lesson['Lesson']['name'])) : ?>
