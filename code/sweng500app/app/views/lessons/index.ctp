@@ -9,6 +9,11 @@
  * Modified By: William DiStefano
 */
 ?>
+<?php
+$this->Html->addCrumb('Courses', '/Courses');
+$this->Html->addCrumb($course['Course']['course_name'], '/Lessons/index/'. $course['Course']['id']);
+?>
+
 
 <div>
     <h2>Lessons For Course <?php echo $course['Course']['course_name']?></h2>

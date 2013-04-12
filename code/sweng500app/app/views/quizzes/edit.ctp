@@ -10,6 +10,13 @@
 */
 ?>
 <?php
+echo $this->Html->addCrumb('Courses', '/Courses/');
+if(!empty($this->data['Quiz']['lesson_id'])) {
+	echo $this->Html->addCrumb($this->data['Lesson']['name'], '/Lessons/edit/'. 
+		$this->data['Quiz']['lesson_id']);
+}
+?>
+<?php
 	$questionCount = 0;
 	if(!empty($this->data['Question'])) {
 		$questionCount = sizeof($this->data['Question']);	

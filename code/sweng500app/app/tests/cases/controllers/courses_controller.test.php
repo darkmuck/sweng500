@@ -161,6 +161,7 @@ class CourseControllerTest extends CakeTestCase {
 
 	function testSearchResults() { 
   		$this->TestCourseController->data['Course']['course_name'] = 't';
+  		$this->TestCourseController->data['Course']['course_number'] = 1;
  		$this->TestCourseController->params = Router::parse('/Courses/searchResults');
  		$this->TestCourseController->params['url']['url'] ='/Courses/searchResults';
 		$this->TestCourseController->beforeFilter();

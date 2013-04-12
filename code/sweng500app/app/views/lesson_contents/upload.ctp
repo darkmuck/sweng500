@@ -9,7 +9,9 @@
  * Modified By: Kevin Scheib
 */
 ?>
-
+<?php $this->Html->addCrumb('Roster', '/Rosters/');?>
+<?php $this->Html->addCrumb($lesson['Course']['course_name'], '/Courses/launch/'. $lesson['Lesson']['course_id']);?>
+<?php $this->Html->addCrumb($lesson['Lesson']['name'], '/Lessons/view/'. $lesson['Lesson']['id']);?>
 <div>
     <h2>Upload Supporting Content for <?php echo $lesson['Lesson']['name']?></h2>
     

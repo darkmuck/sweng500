@@ -10,9 +10,21 @@
 */
 
 ?>
+<?php
+	$this->Html->addCrumb('Roster', '/Rosters');
+	if(!empty($quiz['Quiz']['lesson_id'])) {
+		$this->Html->addCrumb($course['Lesson']['name'], '/Lessons/view/'.$quiz['Quiz']['lesson_id']);
+	} else {
+		$this->Html->addCrumb($course['Course']['course_name'], '/Courses/launch/'.$course['Course']['id']);
+	}
+?>
 
 <div>
-    <h2>Results of <?php echo $quiz['Quiz']['name'] ?></h2>
+<?php if(!empty($quiz['Quiz']['lesson_id'])): ?>
+    <h2>Results of <?php echo $quiz['Quiz']['name']; ?></h2>
+<?php else: ?>
+	<h2>Results of <?php echo $course['Course']['course_name']; ?> Test</h2>
+<?php endif; ?>
 	
 	<span>
 	<?php echo $results->getNumberCorrect(); ?> correct out of 

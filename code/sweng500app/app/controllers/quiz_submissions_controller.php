@@ -121,6 +121,7 @@ class QuizSubmissionsController extends AppController {
 				$this->set('quizSubmission', $quizsub);
 				$this->set('quiz', $quiz);
 				$this->set('results', $quizResult);
+				$this->set('course', $course);
 				
 				$name = $quiz['Quiz']['name'];
 				if(empty($name)) {

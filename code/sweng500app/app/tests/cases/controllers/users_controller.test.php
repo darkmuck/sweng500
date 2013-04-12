@@ -71,10 +71,12 @@ class UserControllerTest extends CakeTestCase {
 	}
 	
 	function testLogin() {
+		$this->TestUserController->User->save($this->debugUser);
 		$this->TestUserController->Auth->data = array ('User' => array('username' => 'tester', 
 				'password' => 'b96689421b87d4c93f377eba19b8eb97807e2656'));
 		
-		$this->TestUserController->data = array('username' => 'tester', 'password' => 'tester');
+		$this->TestUserController->data = array('User' => array(
+				'username' => 'tester', 'password' => 'tester'));
 		
 		$this->TestUserController->params = Router::parse('/Users/login');
 	    $this->TestUserController->beforeFilter();
@@ -86,10 +88,12 @@ class UserControllerTest extends CakeTestCase {
 	}
 	
 	function testIncorrectLogin() {
-		$this->TestUserController->Auth->data = array ('User' => array('username' => 'asdfasd', 
+		$this->TestUserController->User->save($this->debugUser);
+		$this->TestUserController->Auth->data = array ('User' => array('username' => 'test2', 
 				'password' => 'asdfads'));
 		
-		$this->TestUserController->data = array('username' => 'asdf', 'password' => 'asdfdsa');
+		$this->TestUserController->data = array('User' => 
+				array('username' => 'asdf', 'password' => 'asdfdsa'));
 		
 		$this->TestUserController->params = Router::parse('/Users/login');
 	    $this->TestUserController->beforeFilter();
