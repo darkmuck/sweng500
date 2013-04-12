@@ -256,5 +256,10 @@ class UserControllerTest extends CakeTestCase {
 		
 	}
 	
+	function testHelp() {
+	
+		$this->assertTrue(file_exists('../views/users/help.ctp'));
+		
+	}
 }
 ?>
