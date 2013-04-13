@@ -22,7 +22,7 @@
 <h2 class="color">Course Home</h2>
 <h4><?php echo $course['Course']['course_name'];?></h4>
 <?php if(!empty($course['Quiz']['id'])): ?> 
-<p class="right red"><?php echo $this->Html->link('Exit Course', array('controller' => 'courses', 'action'=> './index'),array(), 'Are you sure you want to exit this course?'); ?></p>
+<p class="right red"><?php echo $this->Html->link('Exit Course', array('controller' => 'courses', 'action'=> 'close'),array(), 'Are you sure you want to exit this course?'); ?></p>
 <p class="right color">&nbsp&nbsp|&nbsp&nbsp</p>
 <p class="right"><?php echo $this->Html->link('Take Course Test', array('controller' => 'quiz_submissions', 'action'=> 'take_quiz', $course['Quiz']['id'])); ?></p>
 <p class="right color">&nbsp&nbsp|&nbsp&nbsp</p>

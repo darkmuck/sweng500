@@ -169,6 +169,28 @@ class CourseControllerTest extends CakeTestCase {
 		$count = count($this->TestCourseController->viewVars['courses']);
 		$this->assertTrue($count >= 0);
 	}
+
+	function testLaunch() {
+		$id=3;
+
+		$this->TestCourseController->params = Router::parse('/Courses/launch');
+ 		$this->TestCourseController->params['url']['url'] ='/Courses/launch';
+		$this->TestCourseController->beforeFilter();
+
+		$this->TestCourseController->launch($id);
+		$this->assertEqual($id, $this->TestCourseController->viewVars['course']['Course']['id']);
+	}
+
+	function testClose() {
+
+		$this->TestCourseController->params = Router::parse('/Courses/close');
+ 		$this->TestCourseController->params['url']['url'] ='/Courses/close';
+		$this->TestCourseController->beforeFilter();
+
+		$this->TestCourseController->close();
+
+		$this->assertEqual($this->TestCourseController->redirectUrl, array('action'=> './index')); 
+	}
 	
 	function testArchive() {
 		$id = 10;

@@ -242,7 +242,13 @@ class CoursesController extends AppController {
 		
 		
 		$this->set('next_lesson', $next_lesson);
-	}		
+	}
+
+	function close() 
+   {   
+  		$this->redirect(array('action'=>'./index'));
+	}
+				
 
 	function edit($id = null) 
     {
