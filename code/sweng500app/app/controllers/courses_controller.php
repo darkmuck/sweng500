@@ -187,7 +187,8 @@ class CoursesController extends AppController {
 		));
 		
 		$status = 'Complete';
-		if($roster_course['Roster']['completion_status'] != 'Complete') {
+		if(!empty($roster_course['Roster']['completion_status']) && 
+			$roster_course['Roster']['completion_status'] != 'Complete') {
 			if($count_complete - $count_lessons == 0) {
 				if(!empty($course['Quiz']['id'])) {
 					$status = 'Incomplete';
